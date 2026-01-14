@@ -25,7 +25,7 @@ export function RSVPDisplay({ word, className }: RSVPDisplayProps) {
     return (
         <div className={cn("relative flex items-center justify-center w-full h-[50vh] overflow-hidden select-none", className)}>
 
-            <div className={cn("flex items-baseline justify-center font-mono tracking-wide leading-none text-7xl md:text-8xl lg:text-9xl w-full max-w-[90vw]")}>
+            <div className={cn("flex items-baseline justify-center font-sans tracking-tight leading-none text-7xl md:text-8xl lg:text-9xl w-full max-w-[90vw]")}>
                 {/* Left Part - Flex 1 ensures it pushes against the center equally */}
                 <span className="flex-1 text-right text-white/90 pr-[2px] whitespace-nowrap overflow-hidden">
                     {leftPart}
@@ -33,7 +33,7 @@ export function RSVPDisplay({ word, className }: RSVPDisplayProps) {
 
                 {/* Center Character - The Anchor */}
                 {/* Hardcoded Red Color to ensure visibility. Scale reduced for focus. */}
-                <span className="text-red-500 font-bold w-auto text-center flex-shrink-0 relative z-10 scale-[0.80] origin-bottom transform">
+                <span className="text-red-500 font-bold w-auto text-center flex-shrink-0 relative z-10">
                     {centerChar}
 
                     {/* Vertical Guide Lines - Fixed height and opacity */}

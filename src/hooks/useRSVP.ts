@@ -15,8 +15,8 @@ interface UseRSVPProps {
 
 export function useRSVP({ words, isPlaying, onComplete }: UseRSVPProps) {
   const [index, setIndex] = useState(0);
-  const requestRef = useRef<number>();
-  const lastTimeRef = useRef<number>();
+  const requestRef = useRef<number>(undefined);
+  const lastTimeRef = useRef<number>(undefined);
   const accumulatedTimeRef = useRef<number>(0);
 
   // Reset when words change? Maybe not, allow dynamic updates.
@@ -110,9 +110,9 @@ export function useRSVP({ words, isPlaying, onComplete }: UseRSVPProps) {
 // Utility to calculate ORP
 export function getORPIndex(word: string): number {
   const len = word.length;
-  if (len <= 1) return 0;
-  if (len <= 5) return 1;
-  if (len <= 9) return 2;
-  if (len <= 13) return 3;
+  if (len === 1) return 0;
+  if (len >= 2 && len <= 5) return 1;
+  if (len >= 6 && len <= 9) return 2;
+  if (len >= 10 && len <= 13) return 3;
   return 4;
 }

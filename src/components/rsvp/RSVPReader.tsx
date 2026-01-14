@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { RSVPDisplay } from './RSVPDisplay';
+import React, { useState, useEffect } from 'react';
+import { cleanTextForRSVP } from '@/lib/textUtils';
 import { useRSVP, RSVPWord } from '@/hooks/useRSVP';
 import { Slider } from '@/components/ui/slider';
 import { Play, Pause, RotateCcw, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { RSVPDisplay } from './RSVPDisplay';
 
 interface RSVPReaderProps {
     content: string;
@@ -16,8 +17,9 @@ export function RSVPReader({ content }: RSVPReaderProps) {
     const [baseWPM, setBaseWPM] = useState(300);
     const [processedWords, setProcessedWords] = useState<RSVPWord[]>([]);
 
+
     useEffect(() => {
-        const rawWords = content.split(/\s+/).filter(w => w.length > 0);
+        const rawWords = cleanTextForRSVP(content);
         const wordsWithSpeed = rawWords.map(w => ({
             word: w,
             wpm: baseWPM
