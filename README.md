@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CURT (Can YoU Read This)
+
+CURT is a high-performance Rapid Serial Visual Presentation (RSVP) engine designed to enhance reading speed and cognitive processing. By eliminating saccadic eye movements and anchoring perception to an Optimal Recognition Point (ORP), CURT allows users to achieve reading speeds significantly surpassing traditional methods.
+
+## Core Core Concepts
+
+- **RSVP (Rapid Serial Visual Presentation)**: Words are displayed sequentially at a fixed focal point.
+- **ORP (Optimal Recognition Point)**: The "anchor" letter of each word (highlighted in red) is geometrically centered, minimizing the need for ocular adjustment.
+- **Cognitive Flow State**: Variable speed controls allow users to push past their subvocalization threshold (typically ~400 WPM) into a pure comprehension state (900+ WPM).
+
+## Features
+
+- **Dynamic Speed Control**: Real-time WPM adjustment from 300 to 900+ WPM.
+- **Precision Timing**: Uses `requestAnimationFrame` for frame-perfect word delivery, avoiding drift common in `setInterval` based implementations.
+- **Smart Anchoring**: Algorithmic determination of the red anchor letter based on word length.
+- **Distraction-Free UI**: specific "black-out" design to maximize contrast and focus.
+
+## Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Styling**: Tailwind CSS, CSS Variables for theming (Dark Mode default)
+- **State Management**: React Hooks (Custom `useRSVP` engine)
+- **Language**: TypeScript
 
 ## Getting Started
 
-First, run the development server:
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/curt.git
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Development
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The core engine logic resides in `src/hooks/useRSVP.ts`.
+The visual rendering layout (ORP alignment) is managed in `src/components/rsvp/RSVPDisplay.tsx`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## License
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private / Confidential.
