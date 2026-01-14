@@ -25,25 +25,31 @@ export function RSVPDisplay({ word, className }: RSVPDisplayProps) {
     return (
         <div className={cn("relative flex items-center justify-center w-full h-[50vh] overflow-hidden select-none", className)}>
 
-            <div className={cn("flex items-baseline font-mono tracking-wide leading-none text-7xl md:text-8xl lg:text-9xl")}>
-                {/* Left Part */}
-                <span className="text-right text-white/90 w-[45vw] md:w-[400px] pr-[2px]">
+            <div className={cn("flex items-baseline justify-center font-mono tracking-wide leading-none text-7xl md:text-8xl lg:text-9xl w-full max-w-[90vw]")}>
+                {/* Left Part - Flex 1 ensures it pushes against the center equally */}
+                <span className="flex-1 text-right text-white/90 pr-[2px] whitespace-nowrap overflow-hidden">
                     {leftPart}
                 </span>
 
                 {/* Center Character - The Anchor */}
-                <span className="text-[var(--rsvp-highlight)] font-bold w-auto text-center flex-shrink-0 relative z-10">
+                {/* Hardcoded Red Color to ensure visibility. Scale reduced for focus. */}
+                <span className="text-red-500 font-bold w-auto text-center flex-shrink-0 relative z-10 scale-[0.80] origin-bottom transform">
                     {centerChar}
-                    {/* Subtle anchor line guide below the letter */}
-                    <div className="absolute -bottom-8 left-1/2 w-px h-6 bg-[var(--rsvp-highlight)]/50 -translate-x-1/2" />
-                    <div className="absolute -top-8 left-1/2 w-px h-6 bg-[var(--rsvp-highlight)]/50 -translate-x-1/2" />
+
+                    {/* Vertical Guide Lines - Fixed height and opacity */}
+                    <div className="absolute -bottom-40 left-1/2 w-[2px] bg-white/10 -translate-x-1/2 h-32" />
+                    <div className="absolute -top-40 left-1/2 w-[2px] bg-white/10 -translate-x-1/2 h-32" />
                 </span>
 
-                {/* Right Part */}
-                <span className="text-left text-white/90 w-[45vw] md:w-[400px] pl-[2px]">
+                {/* Right Part - Flex 1 mirroring left */}
+                <span className="flex-1 text-left text-white/90 pl-[2px] whitespace-nowrap overflow-hidden">
                     {rightPart}
                 </span>
             </div>
+
+            {/* Horizontal Frame Lines */}
+            <div className="absolute top-1/2 -translate-y-[120px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="absolute top-1/2 translate-y-[120px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         </div>
     );
 }
