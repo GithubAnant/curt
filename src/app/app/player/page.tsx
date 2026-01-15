@@ -113,6 +113,18 @@ export default function PlayerPage() {
             "w-full min-h-screen flex flex-col justify-center relative",
             isDark ? "bg-black" : "bg-white"
         )}>
+            {/* Back Navigation */}
+            <button
+                onClick={handleNewText}
+                className={cn(
+                    "absolute top-6 left-6 z-50 flex items-center gap-2 text-sm transition-colors",
+                    isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-black"
+                )}
+            >
+                <span className="text-lg">←</span>
+                <span>Back</span>
+            </button>
+
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
 
             <div className="flex-1 flex items-center justify-center">
