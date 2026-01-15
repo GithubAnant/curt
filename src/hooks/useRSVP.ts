@@ -19,71 +19,66 @@ export function useRSVP({ words, isPlaying, onComplete }: UseRSVPProps) {
   const lastTimeRef = useRef<number>(undefined);
   const accumulatedTimeRef = useRef<number>(0);
 
-  // Reset when words change? Maybe not, allow dynamic updates.
-  // But if words length changes drastically, might want to reset index or clamp it.
+  // Refs for mutable state accessed in animation loop
+  const indexRef = useRef(index);
+  const wordsRef = useRef(words);
+  const isPlayingRef = useRef(isPlaying);
+  const onCompleteRef = useRef(onComplete);
 
-  const animate = useCallback(
-    (time: number) => {
-      if (lastTimeRef.current !== undefined) {
-        const deltaTime = time - lastTimeRef.current;
-        accumulatedTimeRef.current += deltaTime;
+  // Sync refs immediately (during render) to ensure fresh data for callbacks/effects
+  indexRef.current = index;
+  wordsRef.current = words;
+  isPlayingRef.current = isPlaying;
+  onCompleteRef.current = onComplete;
 
-        const currentWord = words[index];
-        // Calculate duration: 60000ms / wpm = ms per word
-        // e.g. 300 wpm = 200ms per word
-        let duration =
-          currentWord?.duration ||
-          (currentWord?.wpm ? 60000 / currentWord.wpm : 200);
+  const animate = useCallback((time: number) => {
+    if (lastTimeRef.current !== undefined) {
+      const deltaTime = time - lastTimeRef.current;
+      accumulatedTimeRef.current += deltaTime;
 
-        // Safety clamp
-        if (duration < 50) duration = 50;
+      const currentWords = wordsRef.current;
+      const currentIndex = indexRef.current;
+      const currentWord = currentWords[currentIndex];
 
-        if (accumulatedTimeRef.current >= duration) {
-          // Prepare to advance
-          // We preserve the "overshoot" time to keep the rhythm perfect?
-          // Or reset to 0? Preserving is better for long-term sync,
-          // but simple reset is safer against visually skipping frames if lag spike.
-          // Let's reset but subtract duration to keep phase if it's small drift.
+      let duration =
+        currentWord?.duration ||
+        (currentWord?.wpm ? 60000 / currentWord.wpm : 200);
 
-          while (accumulatedTimeRef.current >= duration) {
-            accumulatedTimeRef.current -= duration;
+      if (duration < 50) duration = 50;
 
-            setIndex((prevIndex) => {
-              const nextIndex = prevIndex + 1;
-              if (nextIndex >= words.length) {
-                // Stop
-                return prevIndex; // Stay on last word
-              }
-              return nextIndex;
-            });
+      if (accumulatedTimeRef.current >= duration) {
+        // Prepare to advance
+        while (accumulatedTimeRef.current >= duration) {
+          accumulatedTimeRef.current -= duration;
 
-            // If we reached the end in the loop, break
-            if (index >= words.length - 1) break;
+          let nextIndex = indexRef.current + 1;
 
-            // Update duration for the *next* word (loop iteration)
-            // But we can't easily access the *next* state inside this state updater closure efficiently
-            // without refs.
-            // So simpler approach: Just one step per frame is safest for React state updates.
+          if (nextIndex >= currentWords.length) {
+            // Stop
+            if (isPlayingRef.current && onCompleteRef.current) {
+              onCompleteRef.current();
+            }
+            return; // Stop animation
           }
+
+          indexRef.current = nextIndex;
+          setIndex(nextIndex);
         }
       }
+    }
 
-      lastTimeRef.current = time;
-      if (index < words.length - 1 && isPlaying) {
-        requestRef.current = requestAnimationFrame(animate);
-      } else if (index >= words.length - 1 && isPlaying && onComplete) {
-        onComplete();
-      }
-    },
-    [index, words, isPlaying, onComplete]
-  );
+    lastTimeRef.current = time;
+    if (isPlayingRef.current && indexRef.current < wordsRef.current.length) {
+      requestRef.current = requestAnimationFrame(animate);
+    }
+  }, []);
 
   useEffect(() => {
     if (isPlaying) {
       requestRef.current = requestAnimationFrame(animate);
     } else {
       lastTimeRef.current = undefined;
-      accumulatedTimeRef.current = 0; // Reset accumulation on pause? Or Keep? Reset feels "Snappier" on play.
+      // accumulatedTimeRef.current = 0; // Don't reset time on pause, allows resume
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     }
     return () => {
@@ -91,12 +86,17 @@ export function useRSVP({ words, isPlaying, onComplete }: UseRSVPProps) {
     };
   }, [isPlaying, animate]);
 
-  // Handle resetting index manually if needed
-  const scrub = (newIndex: number) => {
-    setIndex(Math.max(0, Math.min(newIndex, words.length - 1)));
+  // Handle resetting index manually
+  const scrub = useCallback((newIndex: number) => {
+    const safeIndex = Math.max(
+      0,
+      Math.min(newIndex, wordsRef.current.length - 1)
+    );
+    setIndex(safeIndex);
+    indexRef.current = safeIndex;
     accumulatedTimeRef.current = 0;
     lastTimeRef.current = undefined;
-  };
+  }, []);
 
   return {
     index,

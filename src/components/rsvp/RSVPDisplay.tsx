@@ -38,16 +38,18 @@ export function RSVPDisplay({ word, wpm = 300, isDark = true, className }: RSVPD
                 isDark ? "bg-neutral-800" : "bg-neutral-200"
             )} />
 
-            {/* Word Display */}
-            <div className="flex items-baseline justify-center leading-none text-6xl md:text-7xl lg:text-8xl w-full" style={{ fontFamily: 'Georgia, serif' }}>
+            {/* Word Display - anchor letter fixed at center */}
+            <div className="flex items-baseline justify-center leading-none text-6xl md:text-7xl lg:text-8xl" style={{ fontFamily: 'Georgia, serif' }}>
+                {/* Left part - fixed width, right-aligned */}
                 <span className={cn(
-                    "flex-1 text-right pr-px whitespace-nowrap overflow-hidden",
+                    "w-[200px] md:w-[280px] text-right",
                     isDark ? "text-white" : "text-black"
                 )}>
                     {leftPart}
                 </span>
 
-                <span className="text-[#E07A5F] w-auto text-center flex-shrink-0 relative z-10">
+                {/* Center anchor letter - just colored differently, with vertical guides */}
+                <span className="text-[#E07A5F] relative">
                     {centerChar}
                     <div className={cn(
                         "absolute -bottom-[100px] left-1/2 w-px -translate-x-1/2 h-[100px]",
@@ -59,8 +61,9 @@ export function RSVPDisplay({ word, wpm = 300, isDark = true, className }: RSVPD
                     )} />
                 </span>
 
+                {/* Right part - fixed width, left-aligned */}
                 <span className={cn(
-                    "flex-1 text-left pl-px whitespace-nowrap overflow-hidden",
+                    "w-[200px] md:w-[280px] text-left",
                     isDark ? "text-white" : "text-black"
                 )}>
                     {rightPart}

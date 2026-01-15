@@ -5,28 +5,105 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Demo words that will flash on the landing page
-const DEMO_WORDS = ['can', 'you', 'read', 'this', 'fast?'];
+// Demo words - comprehensive text with reading tips and gradual speed increase
+// Demo words - Simple, engaging, no jargon
+const DEMO_WORDS = [
+  // Intro (250-300 WPM)
+  'welcome', 'to', 'curt',
+  'see', 'how', 'fast', 'you', 'can', 'read',
+  'when', 'you', 'do', 'not', 'have', 'to', 'move', 'your', 'eyes',
+  'across', 'the', 'page',
+
+  // Comfort (350-400 WPM)
+  'this', 'feels', 'easy', 'right',
+  'traditional', 'reading', 'wastes', 'time',
+  'because', 'your', 'eyes', 'stop', 'on', 'every', 'single', 'word',
+  'and', 'jump', 'around', 'without', 'you', 'noticing',
+
+  // Speed Up (450-500 WPM)
+  'but', 'here', 'the', 'words', 'come', 'to', 'you',
+  'streamed', 'directly', 'to', 'your', 'central', 'vision',
+  'your', 'brain', 'processes', 'text', 'much', 'faster',
+  'than', 'your', 'eyes', 'can', 'move',
+
+  // Challenge (600 WPM)
+  'now', 'we', 'are', 'getting', 'faster',
+  'notice', 'how', 'you', 'are', 'still', 'understanding',
+  'the', 'meaning', 'of', 'everything', 'you', 'see',
+  'even', 'though', 'it', 'feels', 'quick',
+
+  // Mastery (700-800 WPM)
+  'let', 'go', 'of', 'the', 'voice', 'in', 'your', 'head',
+  'just', 'look', 'and', 'absorb', 'information', 'instantly',
+  'this', 'is', 'how', 'elite', 'readers', 'consume', 'books',
+  'in', 'a', 'single', 'afternoon',
+
+  // limit (900 WPM)
+  'you', 'are', 'now', 'reading', 'at', 'superhuman', 'speed',
+  'three', 'times', 'faster', 'than', 'average',
+  'welcome', 'to', 'the', 'future', 'of', 'reading'
+];
+
+// Speed thresholds - Gradual increase up to 900 WPM
+const SPEED_THRESHOLDS = [
+  { index: 0, wpm: 250 },     // Intro
+  { index: 20, wpm: 300 },
+  { index: 40, wpm: 350 },    // Comfort
+  { index: 60, wpm: 400 },
+  { index: 80, wpm: 450 },    // Speed Up
+  { index: 100, wpm: 500 },
+  { index: 125, wpm: 600 },   // Challenge
+  { index: 150, wpm: 700 },   // Mastery
+  { index: 175, wpm: 800 },
+  { index: 195, wpm: 900 },   // Limit
+];
 
 export default function LandingPage() {
   const [demoIndex, setDemoIndex] = useState(0);
-  const [demoWPM, setDemoWPM] = useState(300);
   const [isDark, setIsDark] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
 
-  // Animate demo words
+  // Calculate current WPM based on word position
+  const getCurrentWPM = (index: number) => {
+    let wpm = 300;
+    for (const threshold of SPEED_THRESHOLDS) {
+      if (index >= threshold.index) {
+        wpm = threshold.wpm;
+      }
+    }
+    return wpm;
+  };
+
+  const demoWPM = getCurrentWPM(demoIndex);
+
+  // Animate demo words - gradual speed increase with loop
   useEffect(() => {
+    if (isComplete) {
+      const timeout = setTimeout(() => {
+        setDemoIndex(0);
+        setIsComplete(false);
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+
     const interval = setInterval(() => {
       setDemoIndex(prev => {
         if (prev >= DEMO_WORDS.length - 1) {
-          setDemoWPM(w => w >= 900 ? 300 : w + 200);
-          return 0;
+          setIsComplete(true);
+          return prev;
         }
         return prev + 1;
       });
     }, 60000 / demoWPM);
 
     return () => clearInterval(interval);
-  }, [demoWPM]);
+  }, [demoWPM, isComplete]);
+
+  // Restart demo
+  const restartDemo = () => {
+    setDemoIndex(0);
+    setIsComplete(false);
+  };
 
   const currentWord = DEMO_WORDS[demoIndex];
   const orpIndex = currentWord.length <= 3 ? 1 : 2;
@@ -34,33 +111,40 @@ export default function LandingPage() {
   const centerChar = currentWord[orpIndex];
   const rightPart = currentWord.slice(orpIndex + 1);
 
-  // Theme toggle - anchor letter concept
-  const ThemeToggle = () => (
-    <button
-      onClick={() => setIsDark(!isDark)}
-      className="fixed top-6 right-6 z-50 cursor-pointer"
-      style={{ fontFamily: 'Georgia, serif' }}
-    >
-      <span className="text-2xl font-normal text-[#E07A5F] transition-colors">
-        {isDark ? 'd' : 'l'}
-      </span>
-    </button>
-  );
-
   return (
     <div className={cn(
       "min-h-screen overflow-hidden transition-colors",
       isDark ? "bg-black text-white" : "bg-white text-black"
     )}>
-      <ThemeToggle />
-
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-40 px-8 py-6">
+      <nav className="fixed top-0 left-0 right-0 z-40 px-8 py-6 flex items-center justify-between">
         <div className={cn(
           "text-sm tracking-[0.2em] uppercase",
           isDark ? "text-neutral-500" : "text-neutral-400"
         )}>
           CURT
+        </div>
+        <div className="flex items-center gap-6">
+          <a
+            href="https://github.com/GithubAnant/curt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "text-xs tracking-wide transition-colors",
+              isDark ? "text-neutral-600 hover:text-white" : "text-neutral-400 hover:text-black"
+            )}
+          >
+            open source
+          </a>
+          <button
+            onClick={() => setIsDark(!isDark)}
+            className="cursor-pointer"
+            style={{ fontFamily: 'Georgia, serif' }}
+          >
+            <span className="text-xl font-normal text-[#E07A5F] transition-colors">
+              {isDark ? 'd' : 'l'}
+            </span>
+          </button>
         </div>
       </nav>
 
@@ -76,7 +160,7 @@ export default function LandingPage() {
           isDark ? "bg-neutral-800" : "bg-neutral-200"
         )} />
 
-        {/* Vertical Guide - split into two segments to avoid gap */}
+        {/* Vertical Guide - split into two segments */}
         <div className={cn(
           "absolute left-1/2 -translate-x-1/2 w-px",
           isDark ? "bg-neutral-700" : "bg-neutral-300"
@@ -86,37 +170,59 @@ export default function LandingPage() {
           isDark ? "bg-neutral-700" : "bg-neutral-300"
         )} style={{ top: 'calc(50% + 50px)', height: '50px' }} />
 
-        {/* Demo Word Display */}
+        {/* Demo Word Display - anchor letter fixed at center */}
         <div
           className="flex items-baseline justify-center text-6xl md:text-7xl lg:text-8xl"
           style={{ fontFamily: 'Georgia, serif' }}
         >
+          {/* Left part - fixed width, right-aligned */}
           <span className={cn(
-            "min-w-[120px] text-right pr-px",
+            "w-[200px] md:w-[280px] text-right",
             isDark ? "text-white" : "text-black"
           )}>
             {leftPart}
           </span>
+          {/* Center anchor letter - just colored differently */}
           <span className="text-[#E07A5F]">
             {centerChar}
           </span>
+          {/* Right part - fixed width, left-aligned */}
           <span className={cn(
-            "min-w-[120px] text-left pl-px",
+            "w-[200px] md:w-[280px] text-left",
             isDark ? "text-white" : "text-black"
           )}>
             {rightPart}
           </span>
         </div>
 
-        {/* Speed Indicator */}
-        <div
-          className={cn(
-            "absolute bottom-1/3 right-12 text-lg",
+        {/* Replay button when demo is complete */}
+        {isComplete && (
+          <button
+            onClick={restartDemo}
+            className={cn(
+              "absolute top-1/2 translate-y-[60px] left-1/2 -translate-x-1/2 text-sm cursor-pointer transition-colors",
+              isDark ? "text-neutral-600 hover:text-white" : "text-neutral-400 hover:text-black"
+            )}
+          >
+            ↻ replay
+          </button>
+        )}
+
+        {/* Current WPM Display */}
+        <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 flex items-center gap-2">
+          <span
+            className={cn(
+              "text-lg tabular-nums",
+              isDark ? "text-neutral-500" : "text-neutral-500"
+            )}
+            style={{ fontFamily: 'Georgia, serif' }}
+          >
+            {demoWPM}
+          </span>
+          <span className={cn(
+            "text-xs",
             isDark ? "text-neutral-600" : "text-neutral-400"
-          )}
-          style={{ fontFamily: 'Georgia, serif' }}
-        >
-          {demoWPM} wpm
+          )}>wpm</span>
         </div>
 
         {/* CTA at bottom */}
@@ -178,7 +284,7 @@ export default function LandingPage() {
               <div className={cn(
                 "text-2xl mb-1",
                 isDark ? "text-white" : "text-black"
-              )}>900+</div>
+              )}>900</div>
               <div>WPM achievable</div>
             </div>
           </div>
@@ -194,8 +300,20 @@ export default function LandingPage() {
           "max-w-5xl mx-auto flex items-center justify-between text-xs tracking-wide",
           isDark ? "text-neutral-600" : "text-neutral-400"
         )}>
-          <span>CURT v1.0</span>
-          <span>Can You Read This?</span>
+          <span>Can U Read This? · CURT v1.0</span>
+          <a
+            href="https://github.com/GithubAnant/curt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "transition-colors",
+              isDark ? "hover:text-white" : "hover:text-black"
+            )}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+          </a>
         </div>
       </footer>
     </div>
