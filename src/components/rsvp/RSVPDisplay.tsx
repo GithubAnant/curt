@@ -4,15 +4,23 @@ import React from 'react';
 
 interface RSVPDisplayProps {
     word: string | null;
+    wpm?: number;
+    isDark?: boolean;
     className?: string;
 }
 
-export function RSVPDisplay({ word, className }: RSVPDisplayProps) {
+export function RSVPDisplay({ word, wpm = 300, isDark = true, className }: RSVPDisplayProps) {
     if (!word) {
         return (
             <div className={cn("flex flex-col items-center justify-center w-full h-[60vh] text-center", className)}>
-                <span className="text-muted-foreground text-sm tracking-[0.2em] uppercase opacity-50">System Ready</span>
-                <span className="text-white text-4xl mt-4 font-light">Press SPACE to Initialize</span>
+                <span className={cn(
+                    "text-sm tracking-[0.2em] uppercase opacity-50",
+                    isDark ? "text-neutral-500" : "text-neutral-400"
+                )}>Ready</span>
+                <span className={cn(
+                    "text-3xl mt-4 font-light",
+                    isDark ? "text-neutral-400" : "text-neutral-600"
+                )}>Press SPACE to start</span>
             </div>
         );
     }
@@ -23,33 +31,57 @@ export function RSVPDisplay({ word, className }: RSVPDisplayProps) {
     const rightPart = word.slice(orpIndex + 1);
 
     return (
-        <div className={cn("relative flex items-center justify-center w-full h-[50vh] overflow-hidden select-none", className)}>
+        <div className={cn("relative flex flex-col items-center justify-center w-full h-[50vh] overflow-hidden select-none", className)}>
+            {/* Top Horizontal Line */}
+            <div className={cn(
+                "absolute top-1/2 -translate-y-[100px] left-0 right-0 h-px",
+                isDark ? "bg-neutral-800" : "bg-neutral-200"
+            )} />
 
-            <div className={cn("flex items-baseline justify-center font-sans tracking-tight leading-none text-7xl md:text-8xl lg:text-9xl w-full max-w-[90vw]")}>
-                {/* Left Part - Flex 1 ensures it pushes against the center equally */}
-                <span className="flex-1 text-right text-white/90 pr-[2px] whitespace-nowrap overflow-hidden">
+            {/* Word Display */}
+            <div className="flex items-baseline justify-center leading-none text-6xl md:text-7xl lg:text-8xl w-full" style={{ fontFamily: 'Georgia, serif' }}>
+                <span className={cn(
+                    "flex-1 text-right pr-px whitespace-nowrap overflow-hidden",
+                    isDark ? "text-white" : "text-black"
+                )}>
                     {leftPart}
                 </span>
 
-                {/* Center Character - The Anchor */}
-                {/* Hardcoded Red Color to ensure visibility. Scale reduced for focus. */}
-                <span className="text-red-500 font-bold w-auto text-center flex-shrink-0 relative z-10">
+                <span className="text-[#E07A5F] w-auto text-center flex-shrink-0 relative z-10">
                     {centerChar}
-
-                    {/* Vertical Guide Lines - Fixed height and opacity */}
-                    <div className="absolute -bottom-40 left-1/2 w-[2px] bg-white/10 -translate-x-1/2 h-32" />
-                    <div className="absolute -top-40 left-1/2 w-[2px] bg-white/10 -translate-x-1/2 h-32" />
+                    <div className={cn(
+                        "absolute -bottom-[100px] left-1/2 w-px -translate-x-1/2 h-[100px]",
+                        isDark ? "bg-neutral-700" : "bg-neutral-300"
+                    )} />
+                    <div className={cn(
+                        "absolute -top-[100px] left-1/2 w-px -translate-x-1/2 h-[100px]",
+                        isDark ? "bg-neutral-700" : "bg-neutral-300"
+                    )} />
                 </span>
 
-                {/* Right Part - Flex 1 mirroring left */}
-                <span className="flex-1 text-left text-white/90 pl-[2px] whitespace-nowrap overflow-hidden">
+                <span className={cn(
+                    "flex-1 text-left pl-px whitespace-nowrap overflow-hidden",
+                    isDark ? "text-white" : "text-black"
+                )}>
                     {rightPart}
                 </span>
             </div>
 
-            {/* Horizontal Frame Lines */}
-            <div className="absolute top-1/2 -translate-y-[120px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="absolute top-1/2 translate-y-[120px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            {/* Bottom Horizontal Line */}
+            <div className={cn(
+                "absolute top-1/2 translate-y-[100px] left-0 right-0 h-px",
+                isDark ? "bg-neutral-800" : "bg-neutral-200"
+            )} />
+
+            {/* WPM Indicator */}
+            <div className={cn(
+                "absolute bottom-4 right-8 text-lg tracking-wide",
+                isDark ? "text-neutral-600" : "text-neutral-400"
+            )} style={{ fontFamily: 'Georgia, serif' }}>
+                {wpm} wpm
+            </div>
         </div>
     );
 }
+
+
