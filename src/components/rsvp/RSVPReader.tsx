@@ -148,18 +148,43 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                         "flex gap-6 text-sm",
                         isDark ? "text-neutral-500" : "text-neutral-600"
                     )}>
-                        <button
-                            onClick={() => setSpeedMode('linear')}
-                            className={cn(speedMode === 'linear' && (isDark ? "text-white" : "text-black"))}
-                        >
-                            Linear
-                        </button>
-                        <button
-                            onClick={() => setSpeedMode('block')}
-                            className={cn(speedMode === 'block' && (isDark ? "text-white" : "text-black"))}
-                        >
-                            Block
-                        </button>
+                        <div className="relative group">
+                            <button
+                                onClick={() => setSpeedMode('linear')}
+                                className={cn(
+                                    "cursor-pointer transition-colors hover:text-current",
+                                    speedMode === 'linear' && (isDark ? "text-white" : "text-black"),
+                                    speedMode !== 'linear' && "hover:opacity-80"
+                                )}
+                            >
+                                Linear
+                            </button>
+                            <div className={cn(
+                                "absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border shadow-sm",
+                                isDark ? "bg-neutral-900 border-neutral-800 text-neutral-400" : "bg-white border-neutral-200 text-neutral-600"
+                            )}>
+                                Speed increases linearly from Start to End WPM.
+                            </div>
+                        </div>
+
+                        <div className="relative group">
+                            <button
+                                onClick={() => setSpeedMode('block')}
+                                className={cn(
+                                    "cursor-pointer transition-colors hover:text-current",
+                                    speedMode === 'block' && (isDark ? "text-white" : "text-black"),
+                                    speedMode !== 'block' && "hover:opacity-80"
+                                )}
+                            >
+                                Block
+                            </button>
+                            <div className={cn(
+                                "absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border shadow-sm",
+                                isDark ? "bg-neutral-900 border-neutral-800 text-neutral-400" : "bg-white border-neutral-200 text-neutral-600"
+                            )}>
+                                Speed increases in fixed steps (300, 450, 600, 900).
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -265,7 +290,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                             onClick={handleGenerate}
                             disabled={!content.trim()}
                             className={cn(
-                                "text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed group",
+                                "text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed group cursor-pointer",
                                 isDark ? "text-white" : "text-black"
                             )}
                             style={{ fontFamily: 'Georgia, serif' }}

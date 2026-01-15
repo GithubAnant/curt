@@ -70,7 +70,7 @@ export function PlaybackControls({
                         <button
                             onClick={() => setIsPlaying(!isPlaying)}
                             className={cn(
-                                "w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform active:scale-95",
+                                "w-14 h-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform active:scale-95 cursor-pointer",
                                 isDark ? "bg-white text-black" : "bg-black text-white"
                             )}
                         >
@@ -79,7 +79,7 @@ export function PlaybackControls({
                         <button
                             onClick={() => onScrub(0)}
                             className={cn(
-                                "w-10 h-10 rounded-full border flex items-center justify-center transition-colors",
+                                "w-10 h-10 rounded-full border flex items-center justify-center transition-colors cursor-pointer",
                                 isDark
                                     ? "border-neutral-700 text-neutral-400 hover:text-white"
                                     : "border-neutral-300 text-neutral-600 hover:text-black"
@@ -90,7 +90,7 @@ export function PlaybackControls({
                         <button
                             onClick={onNewText}
                             className={cn(
-                                "px-4 h-10 rounded-full border flex items-center justify-center text-xs transition-colors",
+                                "px-4 h-10 rounded-full border flex items-center justify-center text-xs transition-colors cursor-pointer",
                                 isDark
                                     ? "border-neutral-700 text-neutral-400 hover:text-white"
                                     : "border-neutral-300 text-neutral-600 hover:text-black"
