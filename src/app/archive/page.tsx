@@ -1,61 +1,62 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
-import { dailyTexts, readings } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { CheckCircle, XCircle } from "lucide-react";
 
-export default async function ArchivePage() {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
+interface ArchiveEntry {
+    date: string;
+    textId: string;
+    title?: string;
+    wpm: number;
+}
 
-    if (!session) redirect("/auth/login");
+export default function ArchivePage() {
+    const [archive, setArchive] = useState<ArchiveEntry[]>([]);
 
-    const allTexts = await db.select().from(dailyTexts).orderBy(desc(dailyTexts.date));
-    const userReadings = await db.select().from(readings).where(eq(readings.userId, session.user.id));
-
-    const readingsMap = new Map(userReadings.map(r => [r.textId, r]));
+    useEffect(() => {
+        const stored = localStorage.getItem('curt-archive');
+        if (stored) {
+            setArchive(JSON.parse(stored));
+        }
+    }, []);
 
     return (
-        <div className="min-h-screen bg-black text-white p-8">
-            <header className="max-w-4xl mx-auto mb-12 flex justify-between items-center">
-                <h1 className="text-3xl font-bold">Archive</h1>
-                <Link href="/daily" className="text-neutral-400 hover:text-white transition-colors">Back to Daily</Link>
-            </header>
+        <div className="min-h-screen bg-white text-black">
+            <nav className="px-8 py-6 flex justify-between items-center border-b border-neutral-200">
+                <Link href="/" className="font-logo text-lg">curt</Link>
+                <div className="flex items-center gap-6 text-sm">
+                    <Link href="/daily" className="hover:underline">Daily</Link>
+                    <Link href="/app" className="hover:underline">Open App</Link>
+                </div>
+            </nav>
 
-            <div className="max-w-4xl mx-auto grid gap-4">
-                {allTexts.map(text => {
-                    const reading = readingsMap.get(text.id);
-                    const isRead = !!reading;
+            <main className="max-w-3xl mx-auto px-8 py-12">
+                <h1 className="text-3xl font-medium mb-8">Archive</h1>
 
-                    return (
-                        <div key={text.id} className="p-6 rounded-2xl bg-neutral-900/50 border border-white/5 flex justify-between items-center group hover:bg-neutral-900 transition-colors">
-                            <div>
-                                <div className="flex items-center gap-3 mb-1">
-                                    <span className="text-neutral-500 font-mono text-xs">{text.date}</span>
-                                    {isRead && <span className="px-2 py-0.5 rounded text-[10px] bg-green-500/20 text-green-500">COMPLETED</span>}
+                {archive.length === 0 ? (
+                    <div className="text-center py-16 border border-neutral-200">
+                        <p className="text-neutral-500 mb-4">No readings yet.</p>
+                        <Link href="/daily" className="text-sm underline">
+                            Complete today's challenge →
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="border border-neutral-200 divide-y divide-neutral-200">
+                        {archive.slice().reverse().map((entry, i) => (
+                            <div key={i} className="p-6 flex justify-between items-center">
+                                <div>
+                                    <div className="text-xs text-neutral-500 mb-1">{entry.date}</div>
+                                    <div className="font-medium">{entry.title || "Daily Challenge"}</div>
                                 </div>
-                                <h3 className="font-medium text-lg mb-1 group-hover:text-[#E07A5F] transition-colors">{text.title || "Daily Knowledge"}</h3>
-                                <p className="text-neutral-500 text-sm line-clamp-1 max-w-lg">{text.content}</p>
+                                <div className="text-right">
+                                    <div className="text-2xl font-medium">{entry.wpm}</div>
+                                    <div className="text-xs text-neutral-500">wpm</div>
+                                </div>
                             </div>
-
-                            <div className="text-right">
-                                {isRead ? (
-                                    <div className="flex flex-col items-end">
-                                        <span className="text-2xl font-bold">{reading.wpmAchieved}</span>
-                                        <span className="text-xs text-neutral-500">WPM</span>
-                                    </div>
-                                ) : (
-                                    <span className="text-neutral-600 text-sm">--</span>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+                        ))}
+                    </div>
+                )}
+            </main>
         </div>
     );
 }

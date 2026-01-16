@@ -1,47 +1,40 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { getDailyText, getUserReadingForText } from "@/app/actions/game";
-import ClientDailyGame from "./ClientDailyGame"; // We'll make this client component
+import { getDailyText } from "@/app/actions/game";
+import ClientDailyGame from "./ClientDailyGame";
+import Link from "next/link";
 
 export default async function DailyPage() {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
-
-    if (!session) {
-        redirect("/auth/login");
-    }
-
     const dailyText = await getDailyText();
 
     if (!dailyText) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-white bg-black">
-                <p>No text available for today. Check back later!</p>
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center max-w-md px-6">
+                    <h1 className="font-logo text-xl mb-6">curt</h1>
+                    <p className="text-neutral-500 mb-8">No text available today. Check back later!</p>
+                    <Link
+                        href="/app"
+                        className="inline-block px-6 py-3 bg-black text-white text-sm font-medium"
+                    >
+                        Practice with your own text
+                    </Link>
+                </div>
             </div>
         );
     }
 
-    const previousReading = await getUserReadingForText(dailyText.id);
-
     return (
-        <div className="min-h-screen bg-black text-white">
-            <nav className="p-6 flex justify-between items-center border-b border-white/10">
-                <span className="font-bold tracking-widest">CURT DAILY</span>
-                <div className="flex gap-4">
-                    <span className="text-neutral-400">Streak: 0</span> {/* Placeholder */}
-                    <div className="w-8 h-8 bg-neutral-800 rounded-full overflow-hidden">
-                        {session.user.image && <img src={session.user.image} alt="User" />}
-                    </div>
+        <div className="min-h-screen bg-white text-black">
+            {/* Header */}
+            <nav className="px-8 py-6 flex justify-between items-center border-b border-neutral-200">
+                <Link href="/" className="font-logo text-lg">curt</Link>
+                <div className="flex items-center gap-6 text-sm">
+                    <span className="text-neutral-500">daily challenge</span>
+                    <Link href="/archive" className="hover:underline">Archive</Link>
                 </div>
             </nav>
 
-            <main className="container mx-auto px-4 py-8">
-                <ClientDailyGame
-                    dailyText={dailyText}
-                    previousReading={previousReading}
-                />
+            <main className="max-w-4xl mx-auto px-4 py-12">
+                <ClientDailyGame dailyText={dailyText} />
             </main>
         </div>
     );
