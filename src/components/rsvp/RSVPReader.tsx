@@ -304,7 +304,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                             <button
                                 onClick={() => setIsGenerated(false)}
                                 className={cn(
-                                    "text-sm transition-colors",
+                                    "text-sm transition-colors cursor-pointer",
                                     isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-black"
                                 )}
                                 style={{ fontFamily: 'Georgia, serif' }}
@@ -313,7 +313,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                             </button>
                             <button
                                 onClick={handleStart}
-                                className={cn("text-sm transition-colors group", isDark ? "text-white" : "text-black")}
+                                className={cn("text-sm transition-colors group cursor-pointer", isDark ? "text-white" : "text-black")}
                                 style={{ fontFamily: 'Georgia, serif' }}
                             >
                                 <span className="border-b border-transparent group-hover:border-current pb-px">
