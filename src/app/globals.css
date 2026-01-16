@@ -52,3 +52,30 @@
     font-family: "Playfair Display", Georgia, serif;
   }
 }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #171717; /* neutral-900 equivalent */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040; /* neutral-700 equivalent */
+  border-radius: 4px;
+  border: 2px solid #171717; /* Creates padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #525252; /* neutral-600 equivalent */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #404040 #171717;
+}
