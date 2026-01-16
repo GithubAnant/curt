@@ -7,55 +7,82 @@ import { cn } from '@/lib/utils';
 
 // Demo words - comprehensive text with reading tips and gradual speed increase
 // Demo words - Simple, engaging, no jargon
+// Demo words - Clear, educational, and naturally flowing
 const DEMO_WORDS = [
-  // Intro (250-300 WPM)
-  'welcome', 'to', 'curt',
-  'see', 'how', 'fast', 'you', 'can', 'read',
-  'when', 'you', 'do', 'not', 'have', 'to', 'move', 'your', 'eyes',
-  'across', 'the', 'page',
+  // Intro (250 WPM)
+  'welcome', 'to', 'curt', 'the', 'future', 'of', 'reading',
+  'this', 'is', 'a', 'demonstration', 'of', 'rapid', 'serial', 'visual', 'presentation',
+  'by', 'displaying', 'words', 'one', 'at', 'a', 'time',
+  'we', 'eliminate', 'the', 'need', 'for', 'your', 'eyes', 'to', 'move',
 
-  // Comfort (350-400 WPM)
-  'this', 'feels', 'easy', 'right',
-  'traditional', 'reading', 'wastes', 'time',
-  'because', 'your', 'eyes', 'stop', 'on', 'every', 'single', 'word',
-  'and', 'jump', 'around', 'without', 'you', 'noticing',
+  // Saccades (300 WPM)
+  'traditional', 'reading', 'requires', 'your', 'eyes', 'to', 'make', 'small', 'jumps',
+  'called', 'saccades', 'across', 'every', 'line', 'of', 'text',
+  'these', 'jumps', 'waste', 'precious', 'time', 'and', 'cause', 'fatigue',
+  'with', 'curt', 'your', 'eyes', 'stay', 'perfectly', 'still',
 
-  // Speed Up (450-500 WPM)
-  'but', 'here', 'the', 'words', 'come', 'to', 'you',
-  'streamed', 'directly', 'to', 'your', 'central', 'vision',
-  'your', 'brain', 'processes', 'text', 'much', 'faster',
-  'than', 'your', 'eyes', 'can', 'move',
+  // Comfort & ORP (350 WPM)
+  'notice', 'the', 'red', 'highlighted', 'letter', 'in', 'the', 'center',
+  'this', 'is', 'the', 'optimal', 'recognition', 'point',
+  'it', 'anchors', 'your', 'gaze', 'allowing', 'your', 'brain',
+  'to', 'recognize', 'words', 'instantly', 'without', 'scanning',
+
+  // Flow (400 WPM)
+  'as', 'you', 'continue', 'watching', 'you', 'might', 'notice',
+  'that', 'the', 'speed', 'is', 'gradually', 'increasing',
+  'yet', 'your', 'comprehension', 'remains', 'high',
+  'this', 'is', 'because', 'your', 'brain', 'processes', 'visual', 'information',
+  'much', 'faster', 'than', 'you', 'can', 'speak',
+
+  // Subvocalization (450 WPM)
+  'most', 'people', 'have', 'a', 'habit', 'called', 'subvocalization',
+  'identifying', 'words', 'by', 'saying', 'them', 'in', 'their', 'head',
+  'this', 'inner', 'voice', 'limits', 'your', 'reading', 'speed',
+  'to', 'how', 'fast', 'you', 'can', 'talk',
+  'but', 'your', 'brain', 'can', 'go', 'much', 'faster',
+
+  // Speed Up (500 WPM)
+  'by', 'letting', 'go', 'of', 'that', 'inner', 'voice',
+  'and', 'trusting', 'your', 'eyes',
+  'you', 'can', 'absorb', 'information', 'directly', 'as', 'pure', 'meaning',
+  'this', 'state', 'of', 'flow', 'makes', 'reading', 'feel', 'effortless',
 
   // Challenge (600 WPM)
-  'now', 'we', 'are', 'getting', 'faster',
-  'notice', 'how', 'you', 'are', 'still', 'understanding',
-  'the', 'meaning', 'of', 'everything', 'you', 'see',
-  'even', 'though', 'it', 'feels', 'quick',
+  'we', 'are', 'now', 'reading', 'at', 'double', 'the', 'average', 'speed',
+  'imagine', 'finishing', 'a', 'novel', 'in', 'a', 'single', 'afternoon',
+  'or', 'breezing', 'through', 'articles', 'and', 'documents',
+  'in', 'just', 'a', 'fraction', 'of', 'the', 'time',
 
-  // Mastery (700-800 WPM)
-  'let', 'go', 'of', 'the', 'voice', 'in', 'your', 'head',
-  'just', 'look', 'and', 'absorb', 'information', 'instantly',
-  'this', 'is', 'how', 'elite', 'readers', 'consume', 'books',
-  'in', 'a', 'single', 'afternoon',
+  // Advanced (700 WPM)
+  'your', 'brain', 'is', 'neuroplastic', 'and', 'adapts', 'quickly',
+  'practice', 'with', 'this', 'tool', 'daily',
+  'and', 'speeds', 'that', 'seem', 'impossible', 'now',
+  'will', 'soon', 'feel', 'completely', 'natural',
+  'and', 'comfortable',
 
-  // limit (900 WPM)
-  'you', 'are', 'now', 'reading', 'at', 'superhuman', 'speed',
-  'three', 'times', 'faster', 'than', 'average',
-  'welcome', 'to', 'the', 'future', 'of', 'reading'
+  // Mastery (800 WPM)
+  'you', 'are', 'streaming', 'knowledge', 'directly', 'into', 'your', 'mind',
+  'efficiency', 'focus', 'and', 'retention', 'all', 'improve',
+  'when', 'you', 'remove', 'the', 'friction', 'of', 'eye', 'movement',
+
+  // Limit (900 WPM)
+  'welcome', 'to', 'your', 'new', 'reading', 'superpower',
+  'start', 'your', 'training', 'today', 'with', 'curt',
+  'and', 'unlock', 'your', 'full', 'potential'
 ];
 
-// Speed thresholds - Gradual increase up to 900 WPM
+// Speed thresholds - Gradual increase mapped to new text
 const SPEED_THRESHOLDS = [
   { index: 0, wpm: 250 },     // Intro
-  { index: 20, wpm: 300 },
-  { index: 40, wpm: 350 },    // Comfort
-  { index: 60, wpm: 400 },
-  { index: 80, wpm: 450 },    // Speed Up
-  { index: 100, wpm: 500 },
-  { index: 125, wpm: 600 },   // Challenge
-  { index: 150, wpm: 700 },   // Mastery
-  { index: 175, wpm: 800 },
-  { index: 195, wpm: 900 },   // Limit
+  { index: 30, wpm: 300 },    // Saccades start
+  { index: 60, wpm: 350 },    // Comfort start
+  { index: 90, wpm: 400 },    // Flow start
+  { index: 120, wpm: 450 },   // Subvocalization
+  { index: 150, wpm: 500 },   // Speed Up
+  { index: 180, wpm: 600 },   // Challenge
+  { index: 210, wpm: 700 },   // Advanced
+  { index: 235, wpm: 800 },   // Mastery
+  { index: 255, wpm: 900 },   // Limit
 ];
 
 export default function LandingPage() {
