@@ -34,12 +34,12 @@ export function RSVPDisplay({ word, wpm = 300, isDark = true, className }: RSVPD
         <div className={cn("relative flex flex-col items-center justify-center w-full h-[50vh] overflow-hidden select-none", className)}>
             {/* Top Horizontal Line */}
             <div className={cn(
-                "absolute top-1/2 -translate-y-[100px] left-0 right-0 h-px",
+                "absolute top-1/2 -translate-y-[120px] left-0 right-0 h-px",
                 isDark ? "bg-neutral-800" : "bg-neutral-200"
             )} />
 
             {/* Word Display - anchor letter fixed at center */}
-            <div className="flex items-baseline justify-center leading-none text-6xl md:text-7xl lg:text-8xl" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="flex items-baseline justify-center leading-none text-5xl md:text-6xl lg:text-7xl" style={{ fontFamily: 'Georgia, serif' }}>
                 {/* Left part - fixed width, right-aligned */}
                 <span className={cn(
                     "w-[200px] md:w-[280px] text-right",
@@ -51,12 +51,14 @@ export function RSVPDisplay({ word, wpm = 300, isDark = true, className }: RSVPD
                 {/* Center anchor letter - just colored differently, with vertical guides */}
                 <span className="text-[#E07A5F] relative">
                     {centerChar}
+                    {/* Bottom vertical line - gap from letter, extends to horizontal line */}
                     <div className={cn(
-                        "absolute -bottom-[100px] left-1/2 w-px -translate-x-1/2 h-[100px]",
+                        "absolute top-full left-1/2 w-px -translate-x-1/2 h-[90px] mt-4",
                         isDark ? "bg-neutral-700" : "bg-neutral-300"
                     )} />
+                    {/* Top vertical line - gap from letter, extends to horizontal line */}
                     <div className={cn(
-                        "absolute -top-[100px] left-1/2 w-px -translate-x-1/2 h-[100px]",
+                        "absolute bottom-full left-1/2 w-px -translate-x-1/2 h-[90px] mb-4",
                         isDark ? "bg-neutral-700" : "bg-neutral-300"
                     )} />
                 </span>
@@ -72,7 +74,7 @@ export function RSVPDisplay({ word, wpm = 300, isDark = true, className }: RSVPD
 
             {/* Bottom Horizontal Line */}
             <div className={cn(
-                "absolute top-1/2 translate-y-[100px] left-0 right-0 h-px",
+                "absolute top-1/2 translate-y-[120px] left-0 right-0 h-px",
                 isDark ? "bg-neutral-800" : "bg-neutral-200"
             )} />
 

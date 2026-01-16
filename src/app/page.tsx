@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { RSVPDisplay } from '@/components/rsvp/RSVPDisplay';
 
 // Demo words
 const DEMO_WORDS = [
@@ -53,122 +54,77 @@ export default function LandingPage() {
   }, [demoWPM, isComplete]);
 
   const currentWord = DEMO_WORDS[demoIndex];
-  const orpIndex = currentWord.length <= 3 ? 0 : Math.floor(currentWord.length / 3);
-  const leftPart = currentWord.slice(0, orpIndex);
-  const centerChar = currentWord[orpIndex] || '';
-  const rightPart = currentWord.slice(orpIndex + 1);
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'Georgia, serif' }}>
 
       {/* Nav */}
       <nav className="px-8 py-6 flex items-center justify-between">
-        <span className="font-logo text-2xl tracking-tight">curt</span>
-        <div className="flex items-center gap-8 text-sm">
-          <Link href="/daily" className="hover:underline">Daily</Link>
-          <Link href="/archive" className="hover:underline">Archive</Link>
-          <Link href="/app" className="hover:underline font-medium">Open App →</Link>
-        </div>
+        <span className="font-logo text-xl tracking-tight text-[#E07A5F]">curt</span>
+        <Link
+          href="/app"
+          className="text-sm text-neutral-400 hover:text-[#E07A5F] transition-colors"
+        >
+          Open App →
+        </Link>
       </nav>
 
       {/* Hero */}
       <section className="max-w-5xl mx-auto px-8 pt-16 pb-12">
-        <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tight mb-6">
-          Speed reading,<br />
-          <span className="italic">simplified.</span>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight mb-6">
+          Speed reading,
+          <span className="italic text-[#E07A5F]"> simplified.</span>
         </h1>
-        <p className="text-xl text-neutral-500 max-w-lg">
-          Train your brain to read faster. One word at a time.
+        <p className="text-lg text-neutral-500 max-w-lg">
+          Train your brain to read faster.
         </p>
       </section>
 
-      {/* RSVP Demo - The original dark reader with gray borders */}
-      <section className="max-w-5xl mx-auto px-8 pb-20">
-        <div className="relative bg-black overflow-hidden">
-
-          {/* Top border line */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-neutral-700"></div>
-
-          {/* Left vertical line */}
-          <div className="absolute top-0 bottom-0 left-1/4 w-px bg-neutral-800"></div>
-
-          {/* Center vertical line (top) */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-8 bg-neutral-700"></div>
-
-          {/* Right vertical line */}
-          <div className="absolute top-0 bottom-0 right-1/4 w-px bg-neutral-800"></div>
-
-          {/* The word display */}
-          <div className="py-20 flex items-center justify-center">
-            <div className="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight">
-              <span className="text-neutral-500">{leftPart}</span>
-              <span className="text-red-500">{centerChar}</span>
-              <span className="text-neutral-500">{rightPart}</span>
-            </div>
-          </div>
-
-          {/* Bottom section with lines */}
-          <div className="absolute bottom-0 left-0 right-0">
-            {/* Horizontal line */}
-            <div className="h-px bg-neutral-700"></div>
-
-            {/* Bottom bar */}
-            <div className="h-10 bg-black flex items-center justify-between px-6">
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                <span className="text-xs text-neutral-600 font-mono uppercase tracking-wider">Signal: Stable</span>
-              </div>
-              <span className="text-xs text-neutral-500 font-mono">{demoWPM} wpm</span>
-            </div>
-          </div>
-
-          {/* Center vertical line (bottom) */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-px h-8 bg-neutral-700"></div>
+      {/* RSVP Demo - Using the RSVPDisplay component */}
+      <section className="max-w-5xl mx-auto px-8 pb-4">
+        <div className="relative border border-neutral-800 overflow-hidden">
+          <RSVPDisplay word={currentWord} wpm={demoWPM} isDark={true} />
         </div>
       </section>
 
       {/* Simple CTA */}
       <section className="max-w-5xl mx-auto px-8 pb-20">
-        <div className="flex items-center gap-6">
-          <Link
-            href="/app"
-            className="px-8 py-4 bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-colors"
-          >
-            Start Reading
-          </Link>
-          <Link
-            href="/daily"
-            className="text-sm underline"
-          >
-            Try today's challenge
-          </Link>
-        </div>
+        <Link
+          href="/app"
+          className="inline-block px-8 py-4 bg-[#E07A5F] text-black text-sm font-medium hover:bg-[#d66b50] transition-colors"
+        >
+          Start Reading
+        </Link>
       </section>
 
       {/* Features - simple list */}
-      <section className="border-t border-neutral-200 py-16">
+      <section className="border-t border-neutral-800 py-16">
         <div className="max-w-5xl mx-auto px-8">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
-              <h3 className="font-medium mb-2">One word at a time</h3>
+              <h3 className="font-normal mb-2 text-white">One word at a time</h3>
               <p className="text-sm text-neutral-500">RSVP technology eliminates eye movement, letting you focus purely on comprehension.</p>
             </div>
             <div>
-              <h3 className="font-medium mb-2">Progressive speed</h3>
+              <h3 className="font-normal mb-2 text-white">Progressive speed</h3>
               <p className="text-sm text-neutral-500">Start slow, finish fast. Your reading speed increases as you go.</p>
             </div>
             <div>
-              <h3 className="font-medium mb-2">Daily practice</h3>
-              <p className="text-sm text-neutral-500">New text every day. Build a streak. Track your progress.</p>
+              <h3 className="font-normal mb-2 text-white">Paste anything</h3>
+              <p className="text-sm text-neutral-500">Articles, books, notes. Paste any text and start reading immediately.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-neutral-200 py-8">
-        <div className="max-w-5xl mx-auto px-8 text-sm text-neutral-500">
-          © 2026 curt
+      <footer className="border-t border-neutral-800 py-6">
+        <div className="max-w-5xl mx-auto px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-neutral-500">
+          <span><span className="text-[#E07A5F]">curt</span> · Can U Read This · <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Open Source</a></span>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+          </div>
         </div>
       </footer>
     </div>

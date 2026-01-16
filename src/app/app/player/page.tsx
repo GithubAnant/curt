@@ -3,14 +3,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRSVP, RSVPWord } from '@/hooks/useRSVP';
-import { cn } from '@/lib/utils';
 import { RSVPDisplay } from '@/components/rsvp/RSVPDisplay';
 import { PlaybackControls } from '@/components/rsvp/PlaybackControls';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 // Types
 type SpeedMode = 'linear' | 'block';
-const BLOCK_SPEEDS = [300, 450, 600, 900];
+const BLOCK_SPEEDS = [300, 450, 600, 750, 900];
 
 // Clean word helper
 const cleanWord = (word: string): string => {
@@ -22,7 +20,6 @@ const cleanWord = (word: string): string => {
 
 export default function PlayerPage() {
     const router = useRouter();
-    const [isDark, setIsDark] = useState(true);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -42,7 +39,6 @@ export default function PlayerPage() {
                 setSpeedMode(settings.speedMode || 'linear');
                 setStartWPM(settings.startWPM || 300);
                 setEndWPM(settings.endWPM || 900);
-                setIsDark(settings.isDark ?? true);
                 setIsLoaded(true);
             } catch {
                 router.push('/app');
@@ -99,40 +95,30 @@ export default function PlayerPage() {
 
     if (!isLoaded) {
         return (
-            <div className={cn(
-                "w-full h-screen flex items-center justify-center",
-                isDark ? "bg-black text-white" : "bg-white text-black"
-            )}>
-                <span className="text-sm opacity-50">Loading...</span>
+            <div className="w-full h-screen flex items-center justify-center bg-black text-white">
+                <span className="text-sm opacity-50" style={{ fontFamily: 'Georgia, serif' }}>Loading...</span>
             </div>
         );
     }
 
     return (
-        <div className={cn(
-            "w-full min-h-screen flex flex-col justify-center relative",
-            isDark ? "bg-black" : "bg-white"
-        )}>
+        <div className="w-full min-h-screen flex flex-col justify-center relative bg-black">
             {/* Back Navigation */}
             <button
                 onClick={handleNewText}
-                className={cn(
-                    "absolute top-6 left-6 z-50 flex items-center gap-2 text-sm transition-colors",
-                    isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-black"
-                )}
+                className="absolute top-6 left-6 z-50 flex items-center gap-2 text-sm transition-colors text-neutral-500 hover:text-white"
+                style={{ fontFamily: 'Georgia, serif' }}
             >
                 <span className="text-lg">←</span>
                 <span>Back</span>
             </button>
 
-            <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-
             <div className="flex-1 flex items-center justify-center">
-                <RSVPDisplay word={currentWord?.word || null} wpm={currentWPM} isDark={isDark} />
+                <RSVPDisplay word={currentWord?.word || null} wpm={currentWPM} isDark={true} />
             </div>
 
             <PlaybackControls
-                isDark={isDark}
+                isDark={true}
                 isPlaying={isPlaying}
                 setIsPlaying={setIsPlaying}
                 progress={progress}

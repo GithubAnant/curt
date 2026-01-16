@@ -13,7 +13,7 @@ interface RSVPReaderProps {
     initialContent?: string;
 }
 
-const BLOCK_SPEEDS = [300, 450, 600, 900];
+const BLOCK_SPEEDS = [300, 450, 600, 750, 900];
 
 const cleanWord = (word: string): string => {
     return word
@@ -64,13 +64,13 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
     const examples = EXAMPLE_TEXTS.slice(0, 4);
 
     return (
-        <div className="min-h-screen bg-white text-black">
+        <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'Georgia, serif' }}>
             {/* Header */}
-            <nav className="px-8 py-6 flex items-center justify-between border-b border-neutral-200">
-                <Link href="/" className="font-logo text-lg">curt</Link>
+            <nav className="px-8 py-6 flex items-center justify-between border-b border-neutral-800">
+                <Link href="/" className="font-logo text-lg text-[#E07A5F]">curt</Link>
                 <div className="flex items-center gap-6 text-sm">
-                    <Link href="/daily" className="hover:underline">Daily</Link>
-                    <Link href="/archive" className="hover:underline">Archive</Link>
+                    <Link href="/daily" className="text-neutral-400 hover:text-white transition-colors">Daily</Link>
+                    <Link href="/archive" className="text-neutral-400 hover:text-white transition-colors">Archive</Link>
                 </div>
             </nav>
 
@@ -78,19 +78,19 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
 
                 {/* Title */}
                 <div className="mb-8">
-                    <h1 className="text-2xl font-medium mb-2">New Reading</h1>
+                    <h1 className="text-2xl font-normal mb-2">New Reading</h1>
                     <p className="text-neutral-500 text-sm">Paste text below or select an example.</p>
                 </div>
 
                 {/* Mode selector */}
-                <div className="flex gap-6 mb-6 text-sm border-b border-neutral-200">
+                <div className="flex gap-6 mb-6 text-sm border-b border-neutral-800">
                     <button
                         onClick={() => setSpeedMode('linear')}
                         className={cn(
                             "pb-3 border-b-2 -mb-px transition-colors",
                             speedMode === 'linear'
-                                ? "border-black"
-                                : "border-transparent text-neutral-400"
+                                ? "border-[#E07A5F] text-white"
+                                : "border-transparent text-neutral-500 hover:text-neutral-300"
                         )}
                     >
                         Linear
@@ -100,8 +100,8 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                         className={cn(
                             "pb-3 border-b-2 -mb-px transition-colors",
                             speedMode === 'block'
-                                ? "border-black"
-                                : "border-transparent text-neutral-400"
+                                ? "border-[#E07A5F] text-white"
+                                : "border-transparent text-neutral-500 hover:text-neutral-300"
                         )}
                     >
                         Block
@@ -114,20 +114,33 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="Paste your text here..."
-                        className="w-full h-64 p-4 text-lg leading-relaxed resize-none border border-neutral-200 focus:outline-none focus:border-neutral-400 bg-neutral-50 placeholder:text-neutral-400"
+                        className="w-full h-64 p-4 text-lg leading-relaxed resize-none border border-neutral-800 focus:outline-none focus:border-neutral-600 bg-neutral-900 text-white placeholder:text-neutral-600"
+                        style={{ fontFamily: 'Georgia, serif' }}
                     />
                 ) : (
-                    <div className="w-full min-h-64 p-4 text-lg leading-relaxed border border-neutral-200 overflow-auto bg-neutral-50">
+                    <div className="w-full min-h-64 p-4 text-lg leading-relaxed border border-neutral-800 overflow-auto bg-neutral-900" style={{ fontFamily: 'Georgia, serif' }}>
                         {processText(content).map((w, i) => {
                             const words = processText(content);
                             const position = words.length > 1 ? i / (words.length - 1) : 0;
-                            const hue = 120 - (position * 120);
-                            const bgColor = speedMode === 'linear'
-                                ? `hsla(${hue}, 50%, 50%, 0.15)`
-                                : `hsla(${w.wpm === 300 ? 120 : w.wpm === 450 ? 60 : w.wpm === 600 ? 30 : 0}, 50%, 50%, 0.15)`;
+                            // Distinct colors for each speed tier - soft but clearly different
+                            const speedColors = [
+                                'rgba(96, 165, 250, 0.35)',   // Blue - 300 wpm
+                                'rgba(45, 212, 191, 0.35)',   // Teal - 450 wpm
+                                'rgba(250, 204, 21, 0.35)',   // Yellow - 600 wpm
+                                'rgba(251, 146, 60, 0.35)',   // Orange - 750 wpm
+                                'rgba(244, 114, 182, 0.35)',  // Pink - 900 wpm
+                            ];
+                            let bgColor: string;
+                            if (speedMode === 'linear') {
+                                const colorIndex = Math.min(Math.floor(position * speedColors.length), speedColors.length - 1);
+                                bgColor = speedColors[colorIndex];
+                            } else {
+                                const speedIndex = w.wpm <= 300 ? 0 : w.wpm <= 450 ? 1 : w.wpm <= 600 ? 2 : w.wpm <= 750 ? 3 : 4;
+                                bgColor = speedColors[speedIndex];
+                            }
                             return (
                                 <span key={i}>
-                                    <span style={{ backgroundColor: bgColor }} className="px-0.5">
+                                    <span style={{ backgroundColor: bgColor }} className="px-0.5 rounded">
                                         {w.word}
                                     </span>
                                     {' '}
@@ -139,27 +152,27 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
 
                 {/* Speed controls */}
                 {speedMode === 'linear' && !isGenerated && (
-                    <div className="mt-4 p-4 border border-neutral-200 text-sm flex items-center gap-4">
+                    <div className="mt-4 p-4 border border-neutral-800 text-sm flex items-center gap-4">
                         <span className="text-neutral-500">Speed:</span>
                         <input
                             type="number"
                             value={startWPM}
                             onChange={(e) => setStartWPM(parseInt(e.target.value) || 100)}
-                            className="w-16 px-2 py-1 text-center border border-neutral-200 focus:outline-none focus:border-neutral-400"
+                            className="w-16 px-2 py-1 text-center border border-neutral-700 focus:outline-none focus:border-neutral-500 bg-neutral-900 text-white"
                         />
-                        <span>→</span>
+                        <span className="text-neutral-500">→</span>
                         <input
                             type="number"
                             value={endWPM}
                             onChange={(e) => setEndWPM(parseInt(e.target.value) || 200)}
-                            className="w-16 px-2 py-1 text-center border border-neutral-200 focus:outline-none focus:border-neutral-400"
+                            className="w-16 px-2 py-1 text-center border border-neutral-700 focus:outline-none focus:border-neutral-500 bg-neutral-900 text-white"
                         />
                         <span className="text-neutral-500">wpm</span>
                     </div>
                 )}
 
                 {/* Stats & Actions */}
-                <div className="mt-4 p-4 border border-neutral-200 flex items-center justify-between">
+                <div className="mt-4 p-4 border border-neutral-800 flex items-center justify-between">
                     <div className="text-sm text-neutral-500">
                         {wordCount} words · ~{readTime} min
                     </div>
@@ -167,7 +180,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                         {isGenerated && (
                             <button
                                 onClick={() => setIsGenerated(false)}
-                                className="px-4 py-2 text-sm border border-neutral-200 hover:bg-neutral-50"
+                                className="px-4 py-2 text-sm border border-neutral-700 text-neutral-300 hover:border-neutral-500 hover:text-white transition-colors"
                             >
                                 Edit
                             </button>
@@ -175,7 +188,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                         <button
                             onClick={isGenerated ? handleStart : handleGenerate}
                             disabled={!content.trim()}
-                            className="px-4 py-2 text-sm bg-black text-white disabled:opacity-30"
+                            className="px-4 py-2 text-sm bg-[#E07A5F] text-black disabled:opacity-30 hover:bg-[#d66b50] transition-colors"
                         >
                             {isGenerated ? 'Start →' : 'Preview'}
                         </button>
@@ -185,7 +198,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                 {/* Examples */}
                 {!isGenerated && (
                     <div className="mt-12">
-                        <h2 className="text-xs font-medium mb-4 text-neutral-500 uppercase tracking-wide">
+                        <h2 className="text-xs font-normal mb-4 text-neutral-500 uppercase tracking-wide">
                             Examples
                         </h2>
                         <div className="grid grid-cols-2 gap-3">
@@ -193,9 +206,9 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                                 <button
                                     key={i}
                                     onClick={() => setContent(ex.content)}
-                                    className="text-left p-4 border border-neutral-200 hover:border-neutral-400 transition-colors"
+                                    className="text-left p-4 border border-neutral-800 hover:border-neutral-600 transition-colors"
                                 >
-                                    <div className="font-medium text-sm mb-1">{ex.title}</div>
+                                    <div className="font-normal text-sm mb-1 text-white">{ex.title}</div>
                                     <div className="text-xs text-neutral-500 line-clamp-2">
                                         {ex.preview}
                                     </div>

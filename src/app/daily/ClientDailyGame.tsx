@@ -41,35 +41,35 @@ function OnboardingModal({ onComplete }: { onComplete: () => void }) {
     ];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 p-6">
-            <div className="w-full max-w-sm border border-neutral-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-6">
+            <div className="w-full max-w-sm border border-neutral-700 bg-neutral-900">
 
                 {/* Progress */}
                 <div className="flex">
                     {[1, 2, 3].map(n => (
                         <div
                             key={n}
-                            className={`flex-1 h-1 ${n <= step ? 'bg-black' : 'bg-neutral-200'}`}
+                            className={`flex-1 h-1 ${n <= step ? 'bg-[#E07A5F]' : 'bg-neutral-700'}`}
                         />
                     ))}
                 </div>
 
                 <div className="p-8 text-center">
-                    <h2 className="text-xl font-medium mb-4">{steps[step - 1].title}</h2>
-                    <p className="text-neutral-500 mb-8">
+                    <h2 className="text-xl font-normal mb-4 text-white">{steps[step - 1].title}</h2>
+                    <p className="text-neutral-400 mb-8">
                         {steps[step - 1].text}
                     </p>
 
                     <div className="flex gap-3">
                         <button
                             onClick={onComplete}
-                            className="flex-1 py-3 text-sm text-neutral-500 hover:underline"
+                            className="flex-1 py-3 text-sm text-neutral-500 hover:text-white transition-colors"
                         >
                             Skip
                         </button>
                         <button
                             onClick={handleNext}
-                            className="flex-1 py-3 text-sm bg-black text-white font-medium"
+                            className="flex-1 py-3 text-sm bg-[#E07A5F] text-black font-medium hover:bg-[#d66b50] transition-colors"
                         >
                             {step === 3 ? "Start" : "Next"}
                         </button>
@@ -114,29 +114,29 @@ export default function ClientDailyGame({ dailyText }: DailyGameProps) {
 
     if (isCompleted) {
         return (
-            <div className="max-w-sm mx-auto mt-16 border border-neutral-200">
-                <div className="p-8 text-center border-b border-neutral-200">
-                    <div className="text-6xl font-medium mb-2">{wpm}</div>
+            <div className="max-w-sm mx-auto mt-16 border border-neutral-700 bg-neutral-900">
+                <div className="p-8 text-center border-b border-neutral-700">
+                    <div className="text-6xl font-normal mb-2 text-[#E07A5F]">{wpm}</div>
                     <div className="text-neutral-500 text-sm">words per minute</div>
                 </div>
 
                 <div className="p-6 text-center">
-                    <div className="text-sm font-medium mb-1">{dailyText.title || "Today's Reading"}</div>
+                    <div className="text-sm font-normal mb-1 text-white">{dailyText.title || "Today's Reading"}</div>
                     <div className="text-xs text-neutral-500 line-clamp-2">
                         {dailyText.content.slice(0, 100)}...
                     </div>
                 </div>
 
-                <div className="border-t border-neutral-200 p-4 flex gap-3">
+                <div className="border-t border-neutral-700 p-4 flex gap-3">
                     <Link
-                        href="/archive"
-                        className="flex-1 py-2 text-center text-sm border border-neutral-200 hover:bg-neutral-50"
+                        href="/"
+                        className="flex-1 py-2 text-center text-sm border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors"
                     >
-                        Archive
+                        Home
                     </Link>
                     <Link
                         href="/app"
-                        className="flex-1 py-2 text-center text-sm bg-black text-white"
+                        className="flex-1 py-2 text-center text-sm bg-[#E07A5F] text-black hover:bg-[#d66b50] transition-colors"
                     >
                         Practice
                     </Link>
@@ -153,7 +153,7 @@ export default function ClientDailyGame({ dailyText }: DailyGameProps) {
 
             <div className="max-w-3xl mx-auto">
                 <div className="text-center mb-8">
-                    <h1 className="text-2xl font-medium mb-2">Today's Challenge</h1>
+                    <h1 className="text-2xl font-normal mb-2 text-white">Today's Challenge</h1>
                     <p className="text-neutral-500 text-sm">Focus on the red letter. Don't move your eyes.</p>
                 </div>
 
