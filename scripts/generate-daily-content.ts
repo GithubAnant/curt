@@ -43,17 +43,26 @@ async function generateContent(): Promise<string> {
   const response = await result.response;
   const text = response.text();
 
-  if (!text || text.length < 100) {
-    throw new Error("Generated content is too short or empty");
+  if (!text) {
+    throw new Error("Generated content is empty");
+  }
+
+  const wordCount = text.trim().split(/\s+/).length;
+  // Allow a small buffer around the 350-450 target
+  if (wordCount < 300 || wordCount > 500) {
+    throw new Error(
+      `Generated content length (${wordCount} words) is out of expected range (350-450 words)`
+    );
   }
 
   return text.trim();
 }
 
 async function getNextDate(): Promise<string> {
-  // Generate content for tomorrow (since this runs at 11 PM)
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  // Generate content for tomorrow (server time agnostic, using UTC)
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setUTCDate(now.getUTCDate() + 1);
   return tomorrow.toISOString().split("T")[0]; // YYYY-MM-DD
 }
 
@@ -82,21 +91,40 @@ async function saveToDatabase(content: string, date: string): Promise<void> {
 async function main() {
   console.log("🚀 Starting daily content generation...");
 
-  try {
-    const date = await getNextDate();
-    console.log(`📅 Generating content for: ${date}`);
+  const MAX_RETRIES = 3;
+  let attempt = 1;
 
-    const content = await generateContent();
-    console.log(`✅ Generated ${content.split(/\s+/).length} words`);
+  while (attempt <= MAX_RETRIES) {
+    try {
+      console.log(`\n🔄 Attempt ${attempt}/${MAX_RETRIES}`);
 
-    await saveToDatabase(content, date);
-    console.log(`💾 Saved to database successfully!`);
+      const date = await getNextDate();
+      console.log(`📅 Generating content for: ${date}`);
 
-    console.log("\n--- Preview ---");
-    console.log(content.slice(0, 200) + "...");
-  } catch (error) {
-    console.error("❌ Error generating content:", error);
-    process.exit(1);
+      const content = await generateContent();
+      console.log(`✅ Generated ${content.split(/\s+/).length} words`);
+
+      await saveToDatabase(content, date);
+      console.log(`💾 Saved to database successfully!`);
+
+      console.log("\n--- Preview ---");
+      console.log(content.slice(0, 200) + "...");
+
+      // Success - exit normally
+      process.exit(0);
+    } catch (error) {
+      console.error(`❌ Error on attempt ${attempt}:`, error);
+      attempt++;
+
+      if (attempt > MAX_RETRIES) {
+        console.error("💀 All retry attempts failed. Exiting.");
+        process.exit(1);
+      }
+
+      // Wait for a short delay before retrying (e.g., 2 seconds)
+      console.log("⏳ Waiting 2 seconds before retrying...");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
   }
 }
 

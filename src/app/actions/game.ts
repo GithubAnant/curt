@@ -53,10 +53,36 @@ export async function saveReading(textId: number, wpm: number) {
 
   if (!session?.user) throw new Error("Unauthorized");
 
-  await db.insert(readings).values({
-    userId: session.user.id,
-    textId: textId,
-    wpmAchieved: wpm,
-    completedAt: new Date(),
-  });
+  // Input validation
+  if (!Number.isFinite(wpm) || wpm <= 0 || wpm > 5000) {
+    throw new Error("Invalid WPM value. Must be between 1 and 5000.");
+  }
+
+  // Check for existing reading to avoid duplicates (Manual upsert pattern since no unique constraint on schema)
+  const existingReading = await db
+    .select()
+    .from(readings)
+    .where(
+      and(eq(readings.userId, session.user.id), eq(readings.textId, textId))
+    )
+    .limit(1);
+
+  if (existingReading.length > 0) {
+    // Update existing reading
+    await db
+      .update(readings)
+      .set({
+        wpmAchieved: wpm,
+        completedAt: new Date(),
+      })
+      .where(eq(readings.id, existingReading[0].id));
+  } else {
+    // Insert new reading
+    await db.insert(readings).values({
+      userId: session.user.id,
+      textId: textId,
+      wpmAchieved: wpm,
+      completedAt: new Date(),
+    });
+  }
 }

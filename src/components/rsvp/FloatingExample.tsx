@@ -8,44 +8,31 @@ interface FloatingExampleProps {
     preview: string;
     onClick: () => void;
     className?: string;
+    shape?: string;
     delay?: number;
 }
 
-export const FloatingExample = ({ title, preview, onClick, className, delay = 0 }: FloatingExampleProps) => {
+export const FloatingExample = ({ title, preview, onClick, className, delay = 0, shape }: FloatingExampleProps) => {
+    // Default organic shape if none provided
+    const defaultShape = "30% 70% 70% 30% / 30% 30% 70% 70%";
+
     return (
         <motion.button
             onClick={onClick}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ y: 20, opacity: 1 }} // Start fully visible, just slide up
             animate={{
-                opacity: 1,
-                y: [0, -10, 0],
-                x: [0, 5, -5, 0],
-                rotate: [0, 1, -1, 0]
+                y: [0, -8, 0],
+                rotate: [0, 1, 0]
             }}
             transition={{
-                opacity: { duration: 0.5, delay },
-                y: {
-                    repeat: Infinity,
-                    duration: 4 + Math.random() * 2,
-                    ease: "easeInOut",
-                    delay: Math.random() * 2
-                },
-                x: {
-                    repeat: Infinity,
-                    duration: 5 + Math.random() * 2,
-                    ease: "easeInOut",
-                    delay: Math.random() * 2
-                },
-                rotate: {
-                    repeat: Infinity,
-                    duration: 6 + Math.random() * 2,
-                    ease: "easeInOut",
-                    delay: Math.random() * 2
-                }
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: delay
             }}
-            className={`absolute p-4 backdrop-blur-sm bg-neutral-900/50 border border-neutral-800 hover:border-[#E07A5F]/50 transition-colors text-left max-w-[200px] cursor-pointer group ${className}`}
+            className={`absolute p-6 backdrop-blur-md bg-neutral-900/40 border border-neutral-800 hover:border-[#E07A5F]/50 hover:bg-neutral-900/60 transition-all text-left w-[240px] cursor-pointer group ${className}`}
             style={{
-                borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%" // Organic cloud/blob shape
+                borderRadius: shape || defaultShape
             }}
         >
             <div className="font-normal text-sm mb-1 text-white group-hover:text-[#E07A5F] transition-colors">{title}</div>

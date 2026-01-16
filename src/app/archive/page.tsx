@@ -16,7 +16,20 @@ export default function ArchivePage() {
     useEffect(() => {
         const stored = localStorage.getItem('curt-archive');
         if (stored) {
-            setArchive(JSON.parse(stored));
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    setArchive(parsed);
+                } else {
+                    console.error("Archive data is not an array:", parsed);
+                    // Optional: recover or clear invalid data
+                    // localStorage.removeItem('curt-archive');
+                }
+            } catch (e) {
+                console.error("Failed to parse archive data:", e);
+                // Optional: clear corrupted data
+                localStorage.removeItem('curt-archive');
+            }
         }
     }, []);
 

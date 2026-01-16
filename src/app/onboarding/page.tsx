@@ -7,6 +7,15 @@ import { ArrowRight } from 'lucide-react';
 export default function OnboardingPage() {
     const router = useRouter();
     const [videoEnded, setVideoEnded] = useState(false);
+    const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+    React.useEffect(() => {
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, []);
 
     // Placeholder video - replace with actual URL provided by user
     // Using a generic engaging video or the one user provides
@@ -41,7 +50,7 @@ export default function OnboardingPage() {
                     onLoad={() => {
                         // In a real scenario with YouTube API, we'd detect 'onStateChange' for end.
                         // For now, we simulate being able to continue immediately or after a timer.
-                        setTimeout(() => setVideoEnded(true), 5000); // Enable button after 5s just in case
+                        timerRef.current = setTimeout(() => setVideoEnded(true), 5000); // Enable button after 5s just in case
                     }}
                 ></iframe>
             </div>

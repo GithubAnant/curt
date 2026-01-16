@@ -62,7 +62,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
     const wordCount = content.trim().split(/\s+/).filter(w => w.length > 0).length;
     const readTime = wordCount > 0 ? Math.ceil(wordCount / ((startWPM + endWPM) / 2)) : 0;
 
-    const examples = EXAMPLE_TEXTS.slice(0, 4);
+    const examples = EXAMPLE_TEXTS.slice(0, 5);
 
     return (
         <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'Georgia, serif' }}>
@@ -120,34 +120,36 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                     />
                 ) : (
                     <div className="w-full min-h-64 p-4 text-lg leading-relaxed border border-neutral-800 overflow-auto bg-neutral-900" style={{ fontFamily: 'Georgia, serif' }}>
-                        {processText(content).map((w, i) => {
+                        {(() => {
                             const words = processText(content);
-                            const position = words.length > 1 ? i / (words.length - 1) : 0;
-                            // Distinct colors for each speed tier - soft but clearly different
-                            const speedColors = [
-                                'rgba(96, 165, 250, 0.35)',   // Blue - 300 wpm
-                                'rgba(45, 212, 191, 0.35)',   // Teal - 450 wpm
-                                'rgba(250, 204, 21, 0.35)',   // Yellow - 600 wpm
-                                'rgba(251, 146, 60, 0.35)',   // Orange - 750 wpm
-                                'rgba(244, 114, 182, 0.35)',  // Pink - 900 wpm
-                            ];
-                            let bgColor: string;
-                            if (speedMode === 'linear') {
-                                const colorIndex = Math.min(Math.floor(position * speedColors.length), speedColors.length - 1);
-                                bgColor = speedColors[colorIndex];
-                            } else {
-                                const speedIndex = w.wpm <= 300 ? 0 : w.wpm <= 450 ? 1 : w.wpm <= 600 ? 2 : w.wpm <= 750 ? 3 : 4;
-                                bgColor = speedColors[speedIndex];
-                            }
-                            return (
-                                <span key={i}>
-                                    <span style={{ backgroundColor: bgColor }} className="px-0.5 rounded">
-                                        {w.word}
+                            return words.map((w, i) => {
+                                const position = words.length > 1 ? i / (words.length - 1) : 0;
+                                // Distinct colors for each speed tier - soft but clearly different
+                                const speedColors = [
+                                    'rgba(96, 165, 250, 0.35)',   // Blue - 300 wpm
+                                    'rgba(45, 212, 191, 0.35)',   // Teal - 450 wpm
+                                    'rgba(250, 204, 21, 0.35)',   // Yellow - 600 wpm
+                                    'rgba(251, 146, 60, 0.35)',   // Orange - 750 wpm
+                                    'rgba(244, 114, 182, 0.35)',  // Pink - 900 wpm
+                                ];
+                                let bgColor: string;
+                                if (speedMode === 'linear') {
+                                    const colorIndex = Math.min(Math.floor(position * speedColors.length), speedColors.length - 1);
+                                    bgColor = speedColors[colorIndex];
+                                } else {
+                                    const speedIndex = w.wpm <= 300 ? 0 : w.wpm <= 450 ? 1 : w.wpm <= 600 ? 2 : w.wpm <= 750 ? 3 : 4;
+                                    bgColor = speedColors[speedIndex];
+                                }
+                                return (
+                                    <span key={i}>
+                                        <span style={{ backgroundColor: bgColor }} className="px-0.5 rounded">
+                                            {w.word}
+                                        </span>
+                                        {' '}
                                     </span>
-                                    {' '}
-                                </span>
-                            );
-                        })}
+                                );
+                            });
+                        })()}
                     </div>
                 )}
 
@@ -197,31 +199,60 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                 </div>
 
                 {/* Floating Examples */}
+                {/* Floating Examples */}
                 {!isGenerated && (
                     <>
-                        <div className="hidden lg:block absolute top-[20%] left-[5%] w-[200px] h-[500px]">
-                            {examples.slice(0, 2).map((ex, i) => (
-                                <FloatingExample
-                                    key={i}
-                                    title={ex.title}
-                                    preview={ex.preview}
-                                    onClick={() => setContent(ex.content)}
-                                    className={i === 0 ? "top-0 left-0" : "top-[200px] left-[40px]"}
-                                    delay={i * 0.2}
-                                />
-                            ))}
+                        {/* Left Side - 3 items */}
+                        <div className="hidden lg:block absolute top-[15%] left-[2%] w-[250px] h-[600px] pointer-events-none">
+                            {examples.slice(0, 3).map((ex, i) => {
+                                const positions = [
+                                    "top-0 left-4",
+                                    "top-[35%] left-12",
+                                    "bottom-0 left-0"
+                                ];
+                                // Fun, asymmetric shapes (not rectangles, not messy blobs)
+                                const shapes = [
+                                    "24px 24px 24px 4px",  // Speech bubble top-left
+                                    "24px 4px 24px 24px",  // Speech bubble top-right
+                                    "4px 24px 24px 24px"   // Speech bubble bottom-left
+                                ];
+                                return (
+                                    <FloatingExample
+                                        key={i}
+                                        title={ex.title}
+                                        preview={ex.preview}
+                                        onClick={() => setContent(ex.content)}
+                                        className={`pointer-events-auto ${positions[i]}`}
+                                        shape={shapes[i]}
+                                        delay={i * 0.5}
+                                    />
+                                );
+                            })}
                         </div>
-                        <div className="hidden lg:block absolute top-[20%] right-[5%] w-[200px] h-[500px]">
-                            {examples.slice(2, 4).map((ex, i) => (
-                                <FloatingExample
-                                    key={i + 2}
-                                    title={ex.title}
-                                    preview={ex.preview}
-                                    onClick={() => setContent(ex.content)}
-                                    className={i === 0 ? "top-[50px] right-0" : "top-[250px] right-[20px]"}
-                                    delay={(i + 2) * 0.2}
-                                />
-                            ))}
+
+                        {/* Right Side - 2 items with larger gap */}
+                        <div className="hidden lg:block absolute top-[15%] right-[2%] w-[250px] h-[600px] pointer-events-none">
+                            {examples.slice(3, 5).map((ex, i) => {
+                                const positions = [
+                                    "top-[5%] right-0",
+                                    "bottom-[10%] right-8"
+                                ];
+                                const shapes = [
+                                    "24px 24px 4px 24px",  // Speech bubble bottom-right
+                                    "32px 16px 32px 16px"  // Alternate smooth
+                                ];
+                                return (
+                                    <FloatingExample
+                                        key={i + 3}
+                                        title={ex.title}
+                                        preview={ex.preview}
+                                        onClick={() => setContent(ex.content)}
+                                        className={`pointer-events-auto ${positions[i]}`}
+                                        shape={shapes[i]}
+                                        delay={(i + 3) * 0.5}
+                                    />
+                                );
+                            })}
                         </div>
                     </>
                 )}

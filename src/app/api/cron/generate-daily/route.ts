@@ -9,8 +9,7 @@ export async function GET(request: Request) {
   // Basic security check (e.g., for Vercel Cron)
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    // return new NextResponse('Unauthorized', { status: 401 });
-    // Allowing for now for testing purposes or if secret is missing
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
