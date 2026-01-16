@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { RSVPWord } from '@/hooks/useRSVP';
 import { cn } from '@/lib/utils';
 import { EXAMPLE_TEXTS } from '@/data/exampleTexts';
+import { FloatingExample } from './FloatingExample';
 
 type SpeedMode = 'linear' | 'block';
 
@@ -195,29 +196,37 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                     </div>
                 </div>
 
-                {/* Examples */}
+                {/* Floating Examples */}
                 {!isGenerated && (
-                    <div className="mt-12">
-                        <h2 className="text-xs font-normal mb-4 text-neutral-500 uppercase tracking-wide">
-                            Examples
-                        </h2>
-                        <div className="grid grid-cols-2 gap-3">
-                            {examples.map((ex, i) => (
-                                <button
+                    <>
+                        <div className="hidden lg:block absolute top-[20%] left-[5%] w-[200px] h-[500px]">
+                            {examples.slice(0, 2).map((ex, i) => (
+                                <FloatingExample
                                     key={i}
+                                    title={ex.title}
+                                    preview={ex.preview}
                                     onClick={() => setContent(ex.content)}
-                                    className="text-left p-4 border border-neutral-800 hover:border-neutral-600 transition-colors"
-                                >
-                                    <div className="font-normal text-sm mb-1 text-white">{ex.title}</div>
-                                    <div className="text-xs text-neutral-500 line-clamp-2">
-                                        {ex.preview}
-                                    </div>
-                                </button>
+                                    className={i === 0 ? "top-0 left-0" : "top-[200px] left-[40px]"}
+                                    delay={i * 0.2}
+                                />
                             ))}
                         </div>
-                    </div>
+                        <div className="hidden lg:block absolute top-[20%] right-[5%] w-[200px] h-[500px]">
+                            {examples.slice(2, 4).map((ex, i) => (
+                                <FloatingExample
+                                    key={i + 2}
+                                    title={ex.title}
+                                    preview={ex.preview}
+                                    onClick={() => setContent(ex.content)}
+                                    className={i === 0 ? "top-[50px] right-0" : "top-[250px] right-[20px]"}
+                                    delay={(i + 2) * 0.2}
+                                />
+                            ))}
+                        </div>
+                    </>
                 )}
             </main>
+
         </div>
     );
 }
