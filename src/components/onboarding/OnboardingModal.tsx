@@ -87,7 +87,7 @@ export function OnboardingModal() {
                                             playsInline
                                             onEnded={() => setVideoEnded(true)}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent pointer-events-none" />
                                         <div className="absolute bottom-4 left-4 text-white text-left">
                                             <p className="text-sm font-medium">Welcome to WPM Maker</p>
                                             <p className="text-xs text-white/70">Watch how it identifies your ORP.</p>
