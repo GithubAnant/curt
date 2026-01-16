@@ -5,70 +5,68 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Demo words - comprehensive text with reading tips and gradual speed increase
-// Demo words - Simple, engaging, no jargon
 // Demo words - Clear, educational, and naturally flowing
 const DEMO_WORDS = [
   // Intro (250 WPM)
-  'welcome', 'to', 'curt', 'the', 'future', 'of', 'reading',
-  'this', 'is', 'a', 'demonstration', 'of', 'rapid', 'serial', 'visual', 'presentation',
-  'by', 'displaying', 'words', 'one', 'at', 'a', 'time',
-  'we', 'eliminate', 'the', 'need', 'for', 'your', 'eyes', 'to', 'move',
+  'Welcome', 'to', 'Curt', '-', 'the', 'future', 'of', 'reading.',
+  'This', 'is', 'a', 'demonstration', 'of', 'Rapid', 'Serial', 'Visual', 'Presentation.',
+  'By', 'displaying', 'words', 'one', 'at', 'a', 'time,',
+  'we', 'eliminate', 'the', 'need', 'for', 'your', 'eyes', 'to', 'move.',
 
   // Saccades (300 WPM)
-  'traditional', 'reading', 'requires', 'your', 'eyes', 'to', 'make', 'small', 'jumps',
-  'called', 'saccades', 'across', 'every', 'line', 'of', 'text',
-  'these', 'jumps', 'waste', 'precious', 'time', 'and', 'cause', 'fatigue',
-  'with', 'curt', 'your', 'eyes', 'stay', 'perfectly', 'still',
+  'Traditional', 'reading', 'requires', 'your', 'eyes', 'to', 'make', 'small', 'jumps',
+  'called', 'saccades', 'across', 'every', 'line', 'of', 'text.',
+  'These', 'jumps', 'waste', 'precious', 'time', 'and', 'cause', 'fatigue.',
+  'With', 'Curt,', 'your', 'eyes', 'stay', 'perfectly', 'still.',
 
   // Comfort & ORP (350 WPM)
-  'notice', 'the', 'red', 'highlighted', 'letter', 'in', 'the', 'center',
-  'this', 'is', 'the', 'optimal', 'recognition', 'point',
-  'it', 'anchors', 'your', 'gaze', 'allowing', 'your', 'brain',
-  'to', 'recognize', 'words', 'instantly', 'without', 'scanning',
+  'Notice', 'the', 'red', 'highlighted', 'letter', 'in', 'the', 'center.',
+  'This', 'is', 'the', 'Optimal', 'Recognition', 'Point.',
+  'It', 'anchors', 'your', 'gaze,', 'allowing', 'your', 'brain',
+  'to', 'recognize', 'words', 'instantly', 'without', 'scanning.',
 
   // Flow (400 WPM)
-  'as', 'you', 'continue', 'watching', 'you', 'might', 'notice',
-  'that', 'the', 'speed', 'is', 'gradually', 'increasing',
-  'yet', 'your', 'comprehension', 'remains', 'high',
-  'this', 'is', 'because', 'your', 'brain', 'processes', 'visual', 'information',
-  'much', 'faster', 'than', 'you', 'can', 'speak',
+  'As', 'you', 'continue', 'watching,', 'you', 'might', 'notice',
+  'that', 'the', 'speed', 'is', 'gradually', 'increasing.',
+  'Yet', 'your', 'comprehension', 'remains', 'high.',
+  'This', 'is', 'because', 'your', 'brain', 'processes', 'visual', 'information',
+  'much', 'faster', 'than', 'you', 'can', 'speak.',
 
   // Subvocalization (450 WPM)
-  'most', 'people', 'have', 'a', 'habit', 'called', 'subvocalization',
-  'identifying', 'words', 'by', 'saying', 'them', 'in', 'their', 'head',
-  'this', 'inner', 'voice', 'limits', 'your', 'reading', 'speed',
-  'to', 'how', 'fast', 'you', 'can', 'talk',
-  'but', 'your', 'brain', 'can', 'go', 'much', 'faster',
+  'Most', 'people', 'have', 'a', 'habit', 'called', 'subvocalization',
+  '-', 'identifying', 'words', 'by', 'saying', 'them', 'in', 'their', 'head.',
+  'This', 'inner', 'voice', 'limits', 'your', 'reading', 'speed',
+  'to', 'how', 'fast', 'you', 'can', 'talk.',
+  'But', 'your', 'brain', 'can', 'go', 'much', 'faster.',
 
   // Speed Up (500 WPM)
-  'by', 'letting', 'go', 'of', 'that', 'inner', 'voice',
-  'and', 'trusting', 'your', 'eyes',
-  'you', 'can', 'absorb', 'information', 'directly', 'as', 'pure', 'meaning',
-  'this', 'state', 'of', 'flow', 'makes', 'reading', 'feel', 'effortless',
+  'By', 'letting', 'go', 'of', 'that', 'inner', 'voice',
+  'and', 'trusting', 'your', 'eyes,',
+  'you', 'can', 'absorb', 'information', 'directly', 'as', 'pure', 'meaning.',
+  'This', 'state', 'of', 'flow', 'makes', 'reading', 'feel', 'effortless.',
 
   // Challenge (600 WPM)
-  'we', 'are', 'now', 'reading', 'at', 'double', 'the', 'average', 'speed',
-  'imagine', 'finishing', 'a', 'novel', 'in', 'a', 'single', 'afternoon',
+  'We', 'are', 'now', 'reading', 'at', 'double', 'the', 'average', 'speed.',
+  'Imagine', 'finishing', 'a', 'novel', 'in', 'a', 'single', 'afternoon,',
   'or', 'breezing', 'through', 'articles', 'and', 'documents',
-  'in', 'just', 'a', 'fraction', 'of', 'the', 'time',
+  'in', 'just', 'a', 'fraction', 'of', 'the', 'time.',
 
   // Advanced (700 WPM)
-  'your', 'brain', 'is', 'neuroplastic', 'and', 'adapts', 'quickly',
-  'practice', 'with', 'this', 'tool', 'daily',
+  'Your', 'brain', 'is', 'neuroplastic', 'and', 'adapts', 'quickly.',
+  'Practice', 'with', 'this', 'tool', 'daily',
   'and', 'speeds', 'that', 'seem', 'impossible', 'now',
   'will', 'soon', 'feel', 'completely', 'natural',
-  'and', 'comfortable',
+  'and', 'comfortable.',
 
   // Mastery (800 WPM)
-  'you', 'are', 'streaming', 'knowledge', 'directly', 'into', 'your', 'mind',
-  'efficiency', 'focus', 'and', 'retention', 'all', 'improve',
-  'when', 'you', 'remove', 'the', 'friction', 'of', 'eye', 'movement',
+  'You', 'are', 'streaming', 'knowledge', 'directly', 'into', 'your', 'mind.',
+  'Efficiency,', 'focus,', 'and', 'retention', 'all', 'improve',
+  'when', 'you', 'remove', 'the', 'friction', 'of', 'eye', 'movement.',
 
   // Limit (900 WPM)
-  'welcome', 'to', 'your', 'new', 'reading', 'superpower',
-  'start', 'your', 'training', 'today', 'with', 'curt',
-  'and', 'unlock', 'your', 'full', 'potential'
+  'Welcome', 'to', 'your', 'new', 'reading', 'superpower.',
+  'Start', 'your', 'training', 'today', 'with', 'Curt',
+  'and', 'unlock', 'your', 'full', 'potential.',
 ];
 
 // Speed thresholds - Gradual increase mapped to new text
