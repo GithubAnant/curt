@@ -34,6 +34,16 @@
   --radius-sm: calc(0.5rem - 4px);
 
   --color-rsvp-highlight: hsl(0 100% 50%);
+
+  --animate-shimmer: shimmer 2s infinite linear;
+  @keyframes shimmer {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
 }
 
 /* Base styles using the specific theme variables */
