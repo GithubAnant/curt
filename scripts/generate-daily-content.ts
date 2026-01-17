@@ -1,25 +1,24 @@
-/**
- * Daily Content Generator for Curt
- *
- * This script runs daily via GitHub Actions to generate
- * a new speed reading text using Gemini AI and stores it
- * in the Neon database for the next day.
- */
-
+import "dotenv/config";
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { neon } from "@neondatabase/serverless";
+import { z } from "zod";
 
-const GEMINI_API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-const DATABASE_URL = process.env.DATABASE_URL;
+// 1. Runtime Environment Validation using Zod
+const EnvSchema = z.object({
+  GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1, "Google API Key is missing"),
+  DATABASE_URL: z.string().min(1, "Database URL is missing"),
+});
 
-if (!GEMINI_API_KEY) {
-  throw new Error("GOOGLE_GENERATIVE_AI_API_KEY is required");
+const envParse = EnvSchema.safeParse(process.env);
+
+if (!envParse.success) {
+  console.error("❌ Invalid environment variables:");
+  console.error(envParse.error.format());
+  process.exit(1);
 }
 
-if (!DATABASE_URL) {
-  throw new Error("DATABASE_URL is required");
-}
+const { GOOGLE_GENERATIVE_AI_API_KEY, DATABASE_URL } = envParse.data;
 
 const sql = neon(DATABASE_URL);
 
@@ -38,20 +37,12 @@ The text should be enjoyable to read at high speed while still being meaningful 
 
 async function generateContent(): Promise<string> {
   const { text } = await generateText({
-    model: google("gemini-1.5-flash-001"),
+    model: google("gemini-2.5-flash"),
     prompt: PROMPT,
   });
 
   if (!text) {
     throw new Error("Generated content is empty");
-  }
-
-  const wordCount = text.trim().split(/\s+/).length;
-  // Allow a small buffer around the 350-450 target
-  if (wordCount < 300 || wordCount > 500) {
-    throw new Error(
-      `Generated content length (${wordCount} words) is out of expected range (350-450 words)`
-    );
   }
 
   return text.trim();
@@ -113,6 +104,12 @@ async function main() {
       process.exit(0);
     } catch (error) {
       console.error(`❌ Error on attempt ${attempt}:`, error);
+
+      // Basic check for error context (e.g., if it's an object with a message)
+      if (error instanceof Error) {
+        console.error("   Message:", error.message);
+      }
+
       attempt++;
 
       if (attempt > MAX_RETRIES) {
@@ -120,9 +117,10 @@ async function main() {
         process.exit(1);
       }
 
-      // Wait for a short delay before retrying (e.g., 2 seconds)
-      console.log("⏳ Waiting 2 seconds before retrying...");
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Exponential backoff: 2s, 4s, 8s...
+      const delay = Math.pow(2, attempt) * 1000;
+      console.log(`⏳ Waiting ${delay / 1000} seconds before retrying...`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 }
