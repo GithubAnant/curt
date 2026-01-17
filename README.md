@@ -2,7 +2,7 @@
 
 # curt (can u read this)
 
-A minimalist RSVP (Rapid Serial Visual Presentation) reader designed to improve reading speed and retention.
+A RSVP (Rapid Serial Visual Presentation) reader designed to improve reading speed and retention.
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
