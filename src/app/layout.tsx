@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import JsonLd from "@/components/json-ld";
+import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -83,6 +84,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          src="https://cdn.databuddy.cc/databuddy.js"
+          data-client-id={process.env.NEXT_PUBLIC_DATABUDDY_CLIENT_ID}
+          data-track-hash-changes="true"
+          data-track-attributes="true"
+          data-track-interactions="true"
+          crossOrigin="anonymous"
+          async
+        ></script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -94,6 +106,7 @@ export default function RootLayout({
         >
           {children}
           <JsonLd />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
