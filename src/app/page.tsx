@@ -15,10 +15,12 @@ export default function LandingPage() {
       <nav className="px-8 py-6 flex items-center justify-between">
         <span className="font-logo text-xl tracking-tight text-[#E07A5F]">curt</span>
         <Link
-          href="/app"
-          className="text-sm text-neutral-400 hover:text-[#E07A5F] transition-colors"
+          href="https://github.com/GithubAnant/curt"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-neutral-500 hover:text-white transition-colors text-sm"
         >
-          Open App →
+          open source
         </Link>
       </nav>
 

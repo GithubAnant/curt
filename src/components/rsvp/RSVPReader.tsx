@@ -79,7 +79,10 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
 
                 <RSVPFloatingExamples
                     isGenerated={isGenerated}
-                    setContent={setContent}
+                    setContent={(text) => {
+                        setContent(text);
+                        setIsGenerated(true);
+                    }}
                 />
             </main>
         </div>

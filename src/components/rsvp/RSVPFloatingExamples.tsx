@@ -8,7 +8,7 @@ interface RSVPFloatingExamplesProps {
 }
 
 export const RSVPFloatingExamples = ({ isGenerated, setContent }: RSVPFloatingExamplesProps) => {
-    if (isGenerated) return null;
+    // if (isGenerated) return null;  <-- Removed logic so examples stay visible
 
     const examples = EXAMPLE_TEXTS.slice(0, 5);
 

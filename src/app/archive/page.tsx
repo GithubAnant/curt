@@ -1,74 +1,36 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { getAllDailyTexts } from "@/app/actions/game";
 import Link from "next/link";
+import ClientArchiveList from "@/components/archive/ClientArchiveList";
 
-interface ArchiveEntry {
-    date: string;
-    textId: string;
-    title?: string;
-    wpm: number;
-}
+export const dynamic = 'force-dynamic';
 
-export default function ArchivePage() {
-    const [archive, setArchive] = useState<ArchiveEntry[]>([]);
-
-    useEffect(() => {
-        const stored = localStorage.getItem('curt-archive');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed)) {
-                    setArchive(parsed);
-                } else {
-                    console.error("Archive data is not an array:", parsed);
-                    // Optional: recover or clear invalid data
-                    // localStorage.removeItem('curt-archive');
-                }
-            } catch (e) {
-                console.error("Failed to parse archive data:", e);
-                // Optional: clear corrupted data
-                localStorage.removeItem('curt-archive');
-            }
-        }
-    }, []);
+export default async function ArchivePage() {
+    const texts = await getAllDailyTexts();
 
     return (
-        <div className="min-h-screen bg-white text-black">
-            <nav className="px-8 py-6 flex justify-between items-center border-b border-neutral-200">
-                <Link href="/" className="font-logo text-lg">curt</Link>
+        <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'Georgia, serif' }}>
+            <nav className="px-8 py-6 flex justify-between items-center border-b border-neutral-800">
+                <Link href="/" className="font-logo text-lg text-[#E07A5F]">curt</Link>
                 <div className="flex items-center gap-6 text-sm">
-                    <Link href="/daily" className="hover:underline">Daily</Link>
-                    <Link href="/app" className="hover:underline">Open App</Link>
+                    <Link href="/daily" className="text-neutral-500 hover:text-white transition-colors">Daily</Link>
+                    <Link href="/app" className="text-neutral-500 hover:text-white transition-colors">Playground</Link>
                 </div>
             </nav>
 
-            <main className="max-w-3xl mx-auto px-8 py-12">
-                <h1 className="text-3xl font-medium mb-8">Archive</h1>
+            <main className="max-w-4xl mx-auto px-8 py-12">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                    <div>
+                        <h1 className="text-3xl font-normal mb-2">Archive</h1>
+                        <p className="text-neutral-400 text-sm">
+                            Browse and play past daily challenges.
+                        </p>
+                    </div>
+                    <div className="text-xs text-neutral-600 font-mono">
+                        Archives available from Jan 17, 2026
+                    </div>
+                </div>
 
-                {archive.length === 0 ? (
-                    <div className="text-center py-16 border border-neutral-200">
-                        <p className="text-neutral-500 mb-4">No readings yet.</p>
-                        <Link href="/daily" className="text-sm underline">
-                            Complete today's challenge →
-                        </Link>
-                    </div>
-                ) : (
-                    <div className="border border-neutral-200 divide-y divide-neutral-200">
-                        {archive.slice().reverse().map((entry, i) => (
-                            <div key={i} className="p-6 flex justify-between items-center">
-                                <div>
-                                    <div className="text-xs text-neutral-500 mb-1">{entry.date}</div>
-                                    <div className="font-medium">{entry.title || "Daily Challenge"}</div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-2xl font-medium">{entry.wpm}</div>
-                                    <div className="text-xs text-neutral-500">wpm</div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <ClientArchiveList texts={texts} />
             </main>
         </div>
     );

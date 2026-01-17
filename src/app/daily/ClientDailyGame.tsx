@@ -9,9 +9,11 @@ interface DailyGameProps {
         id: number;
         title?: string | null;
         content: string;
+        date: string;
     };
 }
 
+import { getDailySpeed } from '@/lib/daily-speed';
 import DailyGameResult from "@/components/daily/DailyGameResult";
 import OnboardingModal from "@/components/daily/OnboardingModal";
 
@@ -53,6 +55,8 @@ export default function ClientDailyGame({ dailyText }: DailyGameProps) {
         return <DailyGameResult wpm={wpm} dailyText={dailyText} />;
     }
 
+    const dailySpeed = getDailySpeed(dailyText.date);
+
     return (
         <>
             {showOnboarding && (
@@ -68,6 +72,8 @@ export default function ClientDailyGame({ dailyText }: DailyGameProps) {
                 <GameReader
                     content={dailyText.content || ""}
                     onComplete={handleComplete}
+                    fixedWpm={dailySpeed}
+                    hideControls={true}
                 />
             </div>
         </>

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { RSVPWord } from '@/hooks/useRSVP';
 
-type SpeedMode = 'linear' | 'block';
+type SpeedMode = 'linear' | 'block' | 'constant';
 
 const BLOCK_SPEEDS = [300, 450, 600, 750, 900];
 
@@ -44,9 +44,11 @@ export const RSVPInputArea = ({
             if (speedMode === 'linear') {
                 const progress = rawWords.length > 1 ? i / (rawWords.length - 1) : 0;
                 wpm = Math.round(startWPM + progress * (endWPM - startWPM));
-            } else {
+            } else if (speedMode === 'block') {
                 const blockIndex = Math.floor((i / rawWords.length) * BLOCK_SPEEDS.length);
                 wpm = BLOCK_SPEEDS[Math.min(blockIndex, BLOCK_SPEEDS.length - 1)];
+            } else {
+                wpm = startWPM;
             }
             return { word, wpm };
         });
@@ -80,13 +82,30 @@ export const RSVPInputArea = ({
                 ];
 
                 let bgColor: string;
+
                 if (speedMode === 'linear') {
-                    const colorIndex = Math.min(Math.floor(position * speedColors.length), speedColors.length - 1);
-                    bgColor = speedColors[colorIndex];
+                    const interpolateColor = (color1: string, color2: string, factor: number) => {
+                        const c1 = color1.match(/\d+(\.\d+)?/g)?.map(Number) || [0, 0, 0, 0];
+                        const c2 = color2.match(/\d+(\.\d+)?/g)?.map(Number) || [0, 0, 0, 0];
+                        const result = c1.map((v, i) => {
+                            if (i === 3) return 0.35; // Keep alpha constant for consistency
+                            return Math.round(v + (c2[i] - v) * factor);
+                        });
+                        return `rgba(${result[0]}, ${result[1]}, ${result[2]}, ${result[3]})`;
+                    };
+
+                    const totalIntervals = speedColors.length - 1;
+                    const val = position * totalIntervals;
+                    const index1 = Math.min(Math.floor(val), totalIntervals);
+                    const index2 = Math.min(index1 + 1, totalIntervals);
+                    const factor = val - index1;
+
+                    bgColor = interpolateColor(speedColors[index1], speedColors[index2], factor);
                 } else {
                     const speedIndex = w.wpm <= 300 ? 0 : w.wpm <= 450 ? 1 : w.wpm <= 600 ? 2 : w.wpm <= 750 ? 3 : 4;
                     bgColor = speedColors[speedIndex];
                 }
+
                 return (
                     <span key={i}>
                         <span style={{ backgroundColor: bgColor }} className="px-0.5 rounded">

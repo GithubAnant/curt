@@ -6,7 +6,7 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
-type SpeedMode = 'linear' | 'block';
+type SpeedMode = 'linear' | 'block' | 'constant';
 
 interface RSVPModeSelectorProps {
     speedMode: SpeedMode;
@@ -59,6 +59,30 @@ export const RSVPModeSelector = ({ speedMode, setSpeedMode }: RSVPModeSelectorPr
                         <h4 className="text-sm font-semibold text-white">Block Mode</h4>
                         <p className="text-xs text-neutral-400">
                             Speed increases in distinct, stepped stages (e.g., 300 → 450 → 600 wpm).
+                        </p>
+                    </div>
+                </HoverCardContent>
+            </HoverCard>
+
+            <HoverCard openDelay={0} closeDelay={0}>
+                <HoverCardTrigger asChild>
+                    <button
+                        onClick={() => setSpeedMode('constant')}
+                        className={cn(
+                            "pb-3 border-b-2 -mb-px transition-colors outline-none cursor-pointer",
+                            speedMode === 'constant'
+                                ? "border-[#E07A5F] text-white"
+                                : "border-transparent text-neutral-500 hover:text-neutral-300"
+                        )}
+                    >
+                        Constant
+                    </button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-64">
+                    <div className="space-y-1">
+                        <h4 className="text-sm font-semibold text-white">Constant Mode</h4>
+                        <p className="text-xs text-neutral-400">
+                            Read at a single, fixed speed the entire time. Good for consistency.
                         </p>
                     </div>
                 </HoverCardContent>

@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { dailyTexts, readings } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, gte } from "drizzle-orm";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
@@ -85,4 +85,14 @@ export async function saveReading(textId: number, wpm: number) {
       completedAt: new Date(),
     });
   }
+}
+
+export async function getAllDailyTexts() {
+  const texts = await db
+    .select()
+    .from(dailyTexts)
+    .where(gte(dailyTexts.date, "2026-01-17"))
+    .orderBy(desc(dailyTexts.date));
+
+  return texts;
 }
