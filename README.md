@@ -2,7 +2,7 @@
 
 # curt (can u read this)
 
-A RSVP (Rapid Serial Visual Presentation) reader designed to improve reading speed and retention.
+**The speed reader for people who want to stream words directly into their brain.**
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
@@ -12,57 +12,69 @@ A RSVP (Rapid Serial Visual Presentation) reader designed to improve reading spe
 
 </div>
 
-## Overview
+## What is this?
 
-Reading on the web is often cluttered and slow. curt strips away distractions, delivering text one word at a time at a speed you control. Whether you want to breeze through articles or train yourself to read faster, curt provides the environment to focus.
+Reading is slow, but your brain is fast. Curt bridges this gap.
+
+We use RSVP (Rapid Serial Visual Presentation) technology to flash words at you one by one. This eliminates the need for eye movements and prevents you from losing your place. It removes distractions and allows a pure signal to stream directly into your consciousness.
+
+Whether you want to breeze through an extensive reading list or train yourself to read faster, Curt provides the ideal environment.
 
 ## Features
 
-- **RSVP Reading**: High-contrast, single-word display with a red focal point.
+- **RSVP Core**: The application uses a high-contrast, single-word display.
 - **Variable Modes**:
-  - **Linear**: Smooth acceleration to build rhythm.
-  - **Block**: Stepped speed increases for progressive training.
-  - **Constant**: Fixed pace for consistency.
-- **Daily Challenge**: A curated daily text to benchmark your WPM.
-- **Archive**: Track your reading history locally.
+  - **Linear**: This mode provides smooth acceleration to help you find your flow state.
+  - **Block**: This mode increases speed in steps for progressive training.
+  - **Constant**: This mode maintains a fixed pace.
+- **Daily Drops**: You can use the curated daily text to benchmark your WPM and compare it with your past performance.
 
 ## Stack
 
-- Next.js 15 (App Router)
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-- Neon (PostgreSQL)
+- **Next.js 15 (App Router)**
+- **TypeScript**
+- **Tailwind CSS**
+- **Framer Motion**
+- **Neon (PostgreSQL)**
 
 ## Local Development
 
-Clone the repository.
+If you want to run the project locally, follow these steps.
+
+First, clone the repository:
 
 ```bash
 git clone https://github.com/GithubAnant/curt.git
-cd wpm-maker
+cd curt
 ```
 
-Install dependencies.
+Next, install the dependencies:
 
 ```bash
 npm install
 ```
 
-Set up environment variables.
+Then, set up your environment variables:
 
 ```bash
 cp .env.example .env.local
+# Fill in the required values in .env.local
 ```
 
-Run the development server.
+Finally, start the development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+You can visit [http://localhost:3000](http://localhost:3000) to view the application in your browser.
+
+## Reporting Issues
+
+If you encounter any bugs or have feature requests, please report them on GitHub.
+
+**[Report bugs or request features here](https://github.com/GithubAnant/curt/issues)**
 
 ## License
 
-MIT
+This project is licensed under the MIT License.
