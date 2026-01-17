@@ -6,7 +6,8 @@
  * in the Neon database for the next day.
  */
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { google } from "@ai-sdk/google";
+import { generateText } from "ai";
 import { neon } from "@neondatabase/serverless";
 
 const GEMINI_API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
@@ -21,7 +22,6 @@ if (!DATABASE_URL) {
 }
 
 const sql = neon(DATABASE_URL);
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const PROMPT = `Generate an engaging, thought-provoking passage for speed reading practice. 
 
@@ -37,11 +37,10 @@ Requirements:
 The text should be enjoyable to read at high speed while still being meaningful and memorable.`;
 
 async function generateContent(): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-  const result = await model.generateContent(PROMPT);
-  const response = await result.response;
-  const text = response.text();
+  const { text } = await generateText({
+    model: google("gemini-1.5-flash-001"),
+    prompt: PROMPT,
+  });
 
   if (!text) {
     throw new Error("Generated content is empty");
