@@ -17,6 +17,7 @@ interface RSVPReaderProps {
     title?: string;
     subtitle?: string;
     returnUrl?: string;
+    showHeader?: boolean;
 }
 
 export function RSVPReader({
@@ -24,7 +25,8 @@ export function RSVPReader({
     showExamples = true,
     title = "New Reading",
     subtitle = "Paste text below or select an example.",
-    returnUrl = "/app"
+    returnUrl = "/app",
+    showHeader = true
 }: RSVPReaderProps) {
     const router = useRouter();
     const [content, setContent] = useState(initialContent || '');
@@ -46,7 +48,7 @@ export function RSVPReader({
 
     return (
         <div className="min-h-screen bg-black text-white" style={{ fontFamily: 'Georgia, serif' }}>
-            <RSVPHeader />
+            {showHeader && <RSVPHeader />}
 
             <main className="max-w-3xl mx-auto px-8 py-12">
                 <div className="mb-8">

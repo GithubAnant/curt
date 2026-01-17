@@ -52,6 +52,7 @@ export default async function DailyPage() {
                     title="Today's Challenge"
                     subtitle="Focus on the text. Don't move your eyes."
                     returnUrl="/daily"
+                    showHeader={false}
                 />
             </main>
         </div>
