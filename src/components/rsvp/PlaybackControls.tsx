@@ -4,15 +4,17 @@ import { cn } from '@/lib/utils';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 
+import { SpeedMode } from '@/lib/speed-utils';
+
 interface PlaybackControlsProps {
-    isDark?: boolean;
+    isDark: boolean;
     isPlaying: boolean;
-    setIsPlaying: (value: boolean) => void;
+    setIsPlaying: (isPlaying: boolean) => void;
     progress: number;
     currentWPM: number;
-    speedMode: 'linear' | 'block';
+    speedMode: SpeedMode;
     processedWordsLength: number;
-    onScrub: (index: number) => void;
+    onScrub: (progress: number) => void;
     onNewText: () => void;
 }
 
@@ -76,7 +78,7 @@ export function PlaybackControls({
 
             {/* Mode Indicator */}
             <div className="text-center mt-4 text-[10px] uppercase tracking-[0.3em] text-neutral-600" style={{ fontFamily: 'Georgia, serif' }}>
-                CURT / {speedMode === 'linear' ? 'Linear' : 'Block'} Mode
+                CURT / {speedMode.charAt(0).toUpperCase() + speedMode.slice(1)} Mode
             </div>
         </div>
     );

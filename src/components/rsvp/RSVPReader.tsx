@@ -9,13 +9,23 @@ import { RSVPSpeedControls } from './RSVPSpeedControls';
 import { RSVPActions } from './RSVPActions';
 import { RSVPFloatingExamples } from './RSVPFloatingExamples';
 
-type SpeedMode = 'linear' | 'block';
+type SpeedMode = 'linear' | 'block' | 'constant';
 
 interface RSVPReaderProps {
     initialContent?: string;
+    showExamples?: boolean;
+    title?: string;
+    subtitle?: string;
+    returnUrl?: string;
 }
 
-export function RSVPReader({ initialContent }: RSVPReaderProps) {
+export function RSVPReader({
+    initialContent,
+    showExamples = true,
+    title = "New Reading",
+    subtitle = "Paste text below or select an example.",
+    returnUrl = "/app"
+}: RSVPReaderProps) {
     const router = useRouter();
     const [content, setContent] = useState(initialContent || '');
     const [speedMode, setSpeedMode] = useState<SpeedMode>('linear');
@@ -26,7 +36,7 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
     const handleGenerate = () => setIsGenerated(true);
 
     const handleStart = () => {
-        const settings = { content, speedMode, startWPM, endWPM };
+        const settings = { content, speedMode, startWPM, endWPM, returnUrl };
         sessionStorage.setItem('rsvp-settings', JSON.stringify(settings));
         router.push('/app/player');
     };
@@ -40,8 +50,8 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
 
             <main className="max-w-3xl mx-auto px-8 py-12">
                 <div className="mb-8">
-                    <h1 className="text-2xl font-normal mb-2">New Reading</h1>
-                    <p className="text-neutral-500 text-sm">Paste text below or select an example.</p>
+                    <h1 className="text-2xl font-normal mb-2">{title}</h1>
+                    <p className="text-neutral-500 text-sm">{subtitle}</p>
                 </div>
 
                 <RSVPModeSelector
@@ -77,13 +87,15 @@ export function RSVPReader({ initialContent }: RSVPReaderProps) {
                     content={content}
                 />
 
-                <RSVPFloatingExamples
-                    isGenerated={isGenerated}
-                    setContent={(text) => {
-                        setContent(text);
-                        setIsGenerated(true);
-                    }}
-                />
+                {showExamples && (
+                    <RSVPFloatingExamples
+                        isGenerated={isGenerated}
+                        setContent={(text) => {
+                            setContent(text);
+                            setIsGenerated(true);
+                        }}
+                    />
+                )}
             </main>
         </div>
     );

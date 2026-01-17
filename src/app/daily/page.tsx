@@ -1,5 +1,5 @@
 import { getDailyText } from "@/app/actions/game";
-import ClientDailyGame from "./ClientDailyGame";
+import { RSVPReader } from "@/components/rsvp/RSVPReader";
 import Link from "next/link";
 
 export default async function DailyPage() {
@@ -46,7 +46,13 @@ export default async function DailyPage() {
                         {formattedDate}
                     </div>
                 </div>
-                <ClientDailyGame dailyText={dailyText} />
+                <RSVPReader
+                    initialContent={dailyText.content}
+                    showExamples={false}
+                    title="Today's Challenge"
+                    subtitle="Focus on the text. Don't move your eyes."
+                    returnUrl="/daily"
+                />
             </main>
         </div>
     );

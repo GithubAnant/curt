@@ -7,8 +7,7 @@ import { RSVPDisplay } from '@/components/rsvp/RSVPDisplay';
 import { PlaybackControls } from '@/components/rsvp/PlaybackControls';
 
 // Types
-type SpeedMode = 'linear' | 'block';
-const BLOCK_SPEEDS = [300, 450, 600, 750, 900];
+import { SpeedMode, BLOCK_SPEEDS, calculateWpm } from '@/lib/speed-utils';
 
 // Clean word helper
 const cleanWord = (word: string): string => {
@@ -57,14 +56,7 @@ export default function PlayerPage() {
         if (rawWords.length === 0) return [];
 
         return rawWords.map((word, i) => {
-            let wpm: number;
-            if (speedMode === 'linear') {
-                const progress = rawWords.length > 1 ? i / (rawWords.length - 1) : 0;
-                wpm = Math.round(startWPM + progress * (endWPM - startWPM));
-            } else {
-                const blockIndex = Math.floor((i / rawWords.length) * BLOCK_SPEEDS.length);
-                wpm = BLOCK_SPEEDS[Math.min(blockIndex, BLOCK_SPEEDS.length - 1)];
-            }
+            const wpm = calculateWpm(speedMode, startWPM, endWPM, i, rawWords.length);
             return { word, wpm };
         });
     }, [speedMode, startWPM, endWPM]);
@@ -90,7 +82,17 @@ export default function PlayerPage() {
 
     // Handle going back to app
     const handleNewText = () => {
-        router.push('/app');
+        const savedSettings = sessionStorage.getItem('rsvp-settings');
+        let returnUrl = '/app';
+        if (savedSettings) {
+            try {
+                const settings = JSON.parse(savedSettings);
+                if (settings.returnUrl) returnUrl = settings.returnUrl;
+            } catch (e) {
+                // ignore
+            }
+        }
+        router.push(returnUrl);
     };
 
     if (!isLoaded) {

@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
 import { RSVPWord } from '@/hooks/useRSVP';
-
-type SpeedMode = 'linear' | 'block' | 'constant';
-
-const BLOCK_SPEEDS = [300, 450, 600, 750, 900];
+import { SpeedMode, BLOCK_SPEEDS, calculateWpm } from '@/lib/speed-utils';
 
 const cleanWord = (word: string): string => {
     return word
@@ -40,17 +37,11 @@ export const RSVPInputArea = ({
         if (rawWords.length === 0) return [];
 
         return rawWords.map((word, i) => {
-            let wpm: number;
-            if (speedMode === 'linear') {
-                const progress = rawWords.length > 1 ? i / (rawWords.length - 1) : 0;
-                wpm = Math.round(startWPM + progress * (endWPM - startWPM));
-            } else if (speedMode === 'block') {
-                const blockIndex = Math.floor((i / rawWords.length) * BLOCK_SPEEDS.length);
-                wpm = BLOCK_SPEEDS[Math.min(blockIndex, BLOCK_SPEEDS.length - 1)];
-            } else {
-                wpm = startWPM;
-            }
-            return { word, wpm };
+            const wpm = calculateWpm(speedMode, startWPM, endWPM, i, rawWords.length);
+            return {
+                word: word,
+                wpm,
+            };
         });
     }, [content, isGenerated, speedMode, startWPM, endWPM]);
 
