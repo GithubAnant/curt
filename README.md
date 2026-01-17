@@ -1,14 +1,18 @@
+<div align="center">
+
 # curt
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
-![curt home page](screenshots/home.png)
+![curt hero image](screenshots/hero.png)
 
-can u read this?
+### can u read this?
 
 A minimalist RSVP (Rapid Serial Visual Presentation) reader designed to improve reading speed and retention.
+
+</div>
 
 ## Overview
 
