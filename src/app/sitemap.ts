@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://curt.vercel.app"; // Replace with your actual domain
+  const baseUrl = "https://curtt.vercel.app"; // Replace with your actual domain
 
   return [
     {

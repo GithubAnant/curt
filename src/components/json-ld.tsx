@@ -5,7 +5,7 @@ const JsonLd = () => {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
         name: 'Curt',
-        url: 'https://curt.vercel.app',
+        url: 'https://curtt.vercel.app',
         description:
             'Stream knowledge directly into your mind with RSVP technology. No eye movements. No distractions. Just pure signal.',
         applicationCategory: 'ProductivityApplication',
@@ -15,7 +15,7 @@ const JsonLd = () => {
             name: 'Anant Singhal',
             url: 'https://github.com/GithubAnant',
             sameAs: [
-                'https://twitter.com/anant_hq',
+                'https://x.com/anant_hq',
                 'https://www.linkedin.com/in/anantsinghal1',
             ],
         },

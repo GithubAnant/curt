@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   description:
     "Stream knowledge directly into your mind with RSVP technology. No eye movements. No distractions. Just pure signal.",
-  metadataBase: new URL("https://curt.vercel.app"), // Replace with actual domain if different
+  metadataBase: new URL("https://curtt.vercel.app"), // Replace with actual domain if different
   keywords: [
     "speed reading",
     "RSVP",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://curt.vercel.app",
+    url: "https://curtt.vercel.app",
     title: "Curt - Speed Reading Accelerated",
     description:
       "Stream knowledge directly into your mind with RSVP technology. No eye movements. No distractions. Just pure signal.",
