@@ -25,15 +25,16 @@ const sql = neon(DATABASE_URL);
 const PROMPT = `Generate an engaging, thought-provoking passage for speed reading practice. 
 
 Requirements:
-- Length: 350-450 words
+- Length: 300-340 words (keep it punchy and concise)
 - Topic: Choose from technology, science, philosophy, psychology, productivity, creativity, or human potential
 - Style: Clear, intellectual, flowing prose that builds momentum
+- Tone: Subtly motivational and uplifting - leave the reader feeling inspired or energized
 - No headers, bullet points, or formatting - just clean paragraphs
 - Start with an interesting hook
 - Include some surprising facts or perspectives
-- End with a thought-provoking conclusion
+- End with an empowering, thought-provoking conclusion that encourages action or reflection
 
-The text should be enjoyable to read at high speed while still being meaningful and memorable.`;
+The text should be enjoyable to read at high speed while still being meaningful, memorable, and leaving the reader with a spark of motivation.`;
 
 async function generateContent(): Promise<string> {
   const { text } = await generateText({
