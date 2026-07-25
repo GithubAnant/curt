@@ -1,0 +1,18 @@
+name: Keep Workflows Alive
+
+on:
+  schedule:
+    # Run on the 1st and 15th of each month to prevent scheduled workflow disablement
+    - cron: "0 12 1,15 * *"
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Re-enable daily content workflow if disabled
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow enable generate-daily-content.yml || true
+          echo "Workflow keepalive ping at $(date -u)"

@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: Generate daily content
-        run: npx tsx scripts/generate-daily-content.ts
+        run: npm run generate:daily
         env:
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
