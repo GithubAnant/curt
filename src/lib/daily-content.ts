@@ -3,21 +3,67 @@ import { generateText } from "ai";
 import { neon } from "@neondatabase/serverless";
 
 export const DAILY_CONTENT_MODEL = "gemini-3-flash-preview";
-export const OPENROUTER_BACKFILL_MODEL = "google/gemini-3-flash-preview";
+export const OPENROUTER_BACKFILL_MODEL = "google/gemini-2.5-flash-lite";
 
-export const DAILY_CONTENT_PROMPT = `Generate an engaging, thought-provoking passage for speed reading practice. 
+const DAILY_TOPICS = [
+  "a breakthrough in neuroscience or psychology",
+  "a counterintuitive idea from behavioral economics",
+  "a lesson from sports, music, or craft mastery",
+  "a historical invention that changed daily life",
+  "a productivity principle backed by research",
+  "a design or engineering tradeoff",
+  "a habit-building insight",
+  "a creativity technique used by artists or writers",
+  "a communication skill that improves thinking",
+  "a memory or learning technique",
+  "a decision-making framework",
+  "a story from aviation, medicine, or space exploration",
+] as const;
+
+const OPENING_STYLES = [
+  "Open with a surprising specific fact or statistic.",
+  "Open with a short vivid scene from everyday life.",
+  "Open with a direct question that challenges a common assumption.",
+  "Open with a bold, concrete claim — not a metaphor.",
+  "Open with a brief historical anecdote about a real person or event.",
+  "Open with a common mistake people make, then flip it.",
+] as const;
+
+function hashDate(date: string): number {
+  let hash = 0;
+  for (let i = 0; i < date.length; i++) {
+    hash = (hash * 31 + date.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+export function buildDailyContentPrompt(date: string): string {
+  const topic = DAILY_TOPICS[hashDate(date) % DAILY_TOPICS.length];
+  const openingStyle =
+    OPENING_STYLES[hashDate(`${date}-opening`) % OPENING_STYLES.length];
+
+  return `Write a speed-reading practice passage for ${date}.
+
+Topic focus: ${topic}
 
 Requirements:
-- Length: 300-340 words (keep it punchy and concise)
-- Topic: Choose from technology, science, philosophy, psychology, productivity, creativity, or human potential
-- Style: Clear, intellectual, flowing prose that builds momentum
-- Tone: Subtly motivational and uplifting - leave the reader feeling inspired or energized
-- No headers, bullet points, or formatting - just clean paragraphs
-- Start with an interesting hook
-- Include some surprising facts or perspectives
-- End with an empowering, thought-provoking conclusion that encourages action or reflection
+- Length: 300-340 words
+- Style: Clear, direct, modern prose. Concrete and specific — name real things, studies, places, or examples where natural
+- Tone: Smart and energizing, not cheesy or mystical
+- No headers, bullet points, or formatting — just clean paragraphs
+- ${openingStyle}
+- Include at least one surprising fact, example, or perspective
+- End with a practical takeaway the reader can act on today
 
-The text should be enjoyable to read at high speed while still being meaningful, memorable, and leaving the reader with a spark of motivation.`;
+Banned openings and clichés — do NOT use:
+- "The universe whispers/hums"
+- "Imagine a universe where"
+- "Our minds are galaxies"
+- Any cosmic, mystical, or pseudo-profound metaphor in the first sentence
+- Generic motivational filler like "unlock your potential" or "hidden reservoir of strength"
+
+Write something a curious adult would actually enjoy reading fast — sharp, grounded, and varied.`;
+}
 
 export function formatDateUTC(date: Date): string {
   return date.toISOString().split("T")[0];
@@ -40,11 +86,13 @@ export function addDaysToDateString(dateStr: string, days: number): string {
 }
 
 export async function generateDailyContent(
-  modelName: string = DAILY_CONTENT_MODEL
+  modelName: string = DAILY_CONTENT_MODEL,
+  date?: string
 ): Promise<string> {
+  const prompt = buildDailyContentPrompt(date ?? getTomorrowDateUTC());
   const { text } = await generateText({
     model: google(modelName),
-    prompt: DAILY_CONTENT_PROMPT,
+    prompt,
   });
 
   if (!text?.trim()) {
@@ -56,8 +104,10 @@ export async function generateDailyContent(
 
 export async function generateDailyContentViaOpenRouter(
   apiKey: string,
-  modelName: string = OPENROUTER_BACKFILL_MODEL
+  modelName: string = OPENROUTER_BACKFILL_MODEL,
+  date?: string
 ): Promise<string> {
+  const prompt = buildDailyContentPrompt(date ?? getTomorrowDateUTC());
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -66,7 +116,7 @@ export async function generateDailyContentViaOpenRouter(
     },
     body: JSON.stringify({
       model: modelName,
-      messages: [{ role: "user", content: DAILY_CONTENT_PROMPT }],
+      messages: [{ role: "user", content: prompt }],
     }),
   });
 
@@ -110,6 +160,7 @@ export async function generateDailyContentWithRetries(
     provider?: "gemini" | "openrouter";
     openRouterApiKey?: string;
     modelName?: string;
+    date?: string;
     maxRetries?: number;
     delayMs?: number;
   } = {}
@@ -118,6 +169,7 @@ export async function generateDailyContentWithRetries(
     provider = "gemini",
     openRouterApiKey,
     modelName,
+    date = getTomorrowDateUTC(),
     maxRetries = 3,
     delayMs = 0,
   } = options;
@@ -134,11 +186,12 @@ export async function generateDailyContentWithRetries(
         }
         return await generateDailyContentViaOpenRouter(
           openRouterApiKey,
-          modelName ?? OPENROUTER_BACKFILL_MODEL
+          modelName ?? OPENROUTER_BACKFILL_MODEL,
+          date
         );
       }
 
-      return await generateDailyContent(modelName ?? DAILY_CONTENT_MODEL);
+      return await generateDailyContent(modelName ?? DAILY_CONTENT_MODEL, date);
     } catch (error) {
       if (attempt === maxRetries) throw error;
       const waitMs = getRetryDelayMs(error, attempt);

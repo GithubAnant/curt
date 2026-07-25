@@ -27,8 +27,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const content = await generateDailyContentWithRetries();
     const date = getTomorrowDateUTC();
+    const content = await generateDailyContentWithRetries({ date });
     const result = await saveDailyContent(databaseUrl, content, date);
 
     return NextResponse.json({

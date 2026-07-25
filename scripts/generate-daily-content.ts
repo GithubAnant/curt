@@ -1,4 +1,7 @@
-import "dotenv/config";
+import { config } from "dotenv";
+
+config({ path: ".env.local" });
+config({ path: ".env" });
 import { z } from "zod";
 import {
   generateDailyContentWithRetries,
@@ -61,6 +64,7 @@ async function generateForDate(
   const content = await generateDailyContentWithRetries({
     provider: options.backfill ? "openrouter" : "gemini",
     openRouterApiKey,
+    date,
     delayMs: options.backfill ? 1500 : 0,
   });
   const wordCount = content.split(/\s+/).length;
